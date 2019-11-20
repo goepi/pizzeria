@@ -1,14 +1,13 @@
 {
   "packages": [
-    "apps/*",
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
-  "version": "0.0.1",
+  "version": "0.0.0",
   "command": {
     "publish": {
-      "ignoreChanges": [
-        "*.md"
-      ]
+      "ignoreChanges": ["*.md"],
+      "access": "public"
     }
   }
 }
