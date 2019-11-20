@@ -1,0 +1,12 @@
+{
+  "name": "@pizzeria/backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "ts:compile": "tsc --noEmit -p ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@goepi/pizzeria",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "lerna": "^3.19.0",
+    "typescript": "^3.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.11",
+    "lerna": "^3.19.0",
+    "typescript": "^3.7.2"
+  },
+  "scripts": {
+    "publish": "lerna run ts:compile && lerna publish"
+  },
+  "author": "",
+  "license": "ISC"
+}
