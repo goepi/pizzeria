@@ -8,8 +8,10 @@
     "publish": {
       "ignoreChanges": [
         "*.md"
-      ],
-      "access": "public"
+      ]
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

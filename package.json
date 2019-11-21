@@ -13,7 +13,7 @@
     "typescript": "^3.7.2"
   },
   "scripts": {
-    "publish": "lerna run ts:compile && lerna publish"
+    "publish": "lerna publish"
   },
   "author": "",
   "license": "ISC"
