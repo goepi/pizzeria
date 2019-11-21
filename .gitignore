@@ -4,4 +4,4 @@ lerna-debug.log
 .idea
 
 # ignore builds
-/**/lib/
+/**/dist/

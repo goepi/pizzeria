@@ -5,14 +5,13 @@
   "author": "goepi <goepi@gmail.com>",
   "homepage": "https://github.com/goepi/pizzeria#readme",
   "license": "ISC",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "types": "index.d.ts",
   "directories": {
-    "lib": "lib",
-    "test": "__tests__"
+    "dist": "dist"
   },
   "files": [
-    "lib"
+    "dist"
   ],
   "publishConfig": {
     "access": "public"
@@ -22,7 +21,10 @@
     "url": "git+https://github.com/goepi/pizzeria.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "ts:compile": "tsc --noEmit -p .",
+    "build": "npm run clean && npm run compile",
+    "clean": "rm -rf ./dist",
+    "compile": "tsc -p ./tsconfig.build.json"
   },
   "bugs": {
     "url": "https://github.com/goepi/pizzeria/issues"
