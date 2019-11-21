@@ -1,0 +1,30 @@
+{
+  "name": "@goepi/pizzeria-backend",
+  "version": "0.0.100",
+  "description": "Pizzeria API",
+  "author": "goepi <goepi@gmail.com>",
+  "homepage": "https://github.com/goepi/pizzeria#readme",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "types": "index.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goepi/pizzeria.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/goepi/pizzeria/issues"
+  }
+}

@@ -3,7 +3,7 @@
     "apps/*",
     "packages/*"
   ],
-  "version": "0.0.33",
+  "version": "0.0.100",
   "command": {
     "publish": {
       "ignoreChanges": [
