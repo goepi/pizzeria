@@ -3,15 +3,12 @@
     "apps/*",
     "packages/*"
   ],
-  "version": "0.0.3",
+  "version": "0.0.31",
   "command": {
     "publish": {
       "ignoreChanges": [
         "*.md"
       ]
     }
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

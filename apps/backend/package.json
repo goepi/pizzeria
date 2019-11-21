@@ -6,8 +6,11 @@
   "scripts": {
     "ts:compile": "tsc --noEmit -p ."
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "gitHead": "79a69d0fd6ff93bf22ba32059c1015145a6a5695"
+  "gitHead": "4fdd67bb7000f25dda927bc33760fa38b5fb0ab1"
 }
