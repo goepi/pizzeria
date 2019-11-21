@@ -6,7 +6,7 @@
   "homepage": "https://github.com/goepi/pizzeria#readme",
   "license": "ISC",
   "main": "dist/index.js",
-  "types": "index.d.ts",
+  "types": "dist/index.d.ts",
   "directories": {
     "dist": "dist"
   },
