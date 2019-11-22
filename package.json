@@ -5,11 +5,17 @@
   "main": "index.js",
   "dependencies": {
     "lerna": "^3.19.0",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   },
   "devDependencies": {
     "@types/node": "^12.12.11",
     "lerna": "^3.19.0",
+    "prettier": "^1.19.1",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-react": "^4.1.0",
     "typescript": "^3.7.2"
   },
   "scripts": {
@@ -17,7 +23,8 @@
     "tsc": "tsc",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist",
-    "compile": "tsc -p ./tsconfig.build.json"
+    "compile": "tsc -p ./tsconfig.build.json",
+    "ts:compile": "tsc --noEmit -p ./tsconfig.json"
   },
   "publishConfig": {
     "access": "public"

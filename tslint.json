@@ -1,0 +1,43 @@
+{
+    "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+    "rules": {
+        "max-classes-per-file": false,
+        "object-literal-sort-keys": false,
+        "import-name": false,
+        "jsx-boolean-value": "never",
+        "no-increment-decrement": false,
+        "no-empty": false,
+        "prefer-array-literal": false,
+        "jsx-no-bind": false,
+        "jsx-no-lambda": false,
+        "variable-name": [true, "allow-pascal-case"],
+        "interface-name": false,
+        "member-ordering": [
+            true,
+            {
+                "order": [
+                    "private-static-field",
+                    "protected-static-field",
+                    "public-static-field",
+
+                    "private-instance-field",
+                    "protected-instance-field",
+                    "public-instance-field",
+
+                    "private-static-method",
+                    "protected-static-method",
+                    "public-static-method",
+
+                    "private-constructor",
+                    "protected-constructor",
+                    "public-constructor",
+
+                    "private-instance-method",
+                    "protected-instance-method",
+                    "public-instance-method"
+                ]
+            }
+        ],
+        "no-console": false
+    }
+}
