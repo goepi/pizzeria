@@ -10,3 +10,10 @@ export interface Token {
   username: string;
   expires: number;
 }
+
+export interface MenuItem {
+  name: string;
+  price: number;
+}
+
+export type Menu = MenuItem[];

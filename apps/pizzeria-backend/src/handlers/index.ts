@@ -1,13 +1,15 @@
-import { usersHandler, UsersSubHandler } from './users';
+import { usersHandler, UsersSubHandler } from './users/index';
 import { tokensHandler, TokensHandler } from './tokens/index';
 import { DataObject, StatusCode } from '../server/types';
 import { CallbackError } from '../types/errors';
-import { Token, User } from '../data/types';
+import { Menu, Token, User } from '../data/types';
 import { isValidMethodForHandler } from '../router/helpers';
+import { MenusHandler, menusHandler } from './menus';
 
 interface Handlers {
   users: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError | User) => void) => void;
   tokens: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError | Token) => void) => void;
+  menus: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError | Menu) => void) => void;
   notFound: (data: DataObject, callback: (statusCode: 404, payload: CallbackError) => void) => void;
   ping: (data: DataObject, callback: (statusCode: 200) => void) => void;
 }
@@ -15,6 +17,7 @@ interface Handlers {
 interface SubHandlers {
   users: UsersSubHandler;
   tokens: TokensHandler;
+  menus: MenusHandler;
 }
 
 // first handler where keys are paths
@@ -30,6 +33,11 @@ export const handlers: Handlers = {
       subHandlers.tokens[data.method](data, callback);
     }
   },
+  menus: (data: DataObject, callback) => {
+    if (isValidMethodForHandler(menusHandler)(data.method)) {
+      subHandlers.menus[data.method](data, callback);
+    }
+  },
   notFound: (data: DataObject, callback) => {
     callback(404, { error: 'That route does not exist.' });
   },
@@ -42,4 +50,5 @@ export const handlers: Handlers = {
 const subHandlers: SubHandlers = {
   users: usersHandler,
   tokens: tokensHandler,
+  menus: menusHandler,
 };

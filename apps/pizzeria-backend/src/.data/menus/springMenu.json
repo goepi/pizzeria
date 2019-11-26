@@ -1,0 +1,26 @@
+{
+  "8cbd53ba-eb1c-466a-835b-47ae4fdba101": {
+    "name": "Chocolate Bacon Fudge",
+    "price": 7.99
+  },
+  "86fb5a81-30df-4a9e-ae59-dd128e9a96c9'": {
+    "name": "Vanilla Morning Coffee",
+    "price": 2.50
+  },
+  "b5440573-4bb3-48f4-ad9f-bbd75b42a64a": {
+    "name": "Keto Oreos",
+    "price": 5.00
+  },
+  "538f46cc-8c45-4a63-ad1a-ddf7ea83f1d3'": {
+    "name": "Cinammon Swirl Cookies",
+    "price": 4.50
+  },
+  "96897d6c-8ab7-4798-93ed-ddbb9d8bfb4c": {
+    "name": "Assorted Macarones",
+    "price": 7.99
+  },
+  "cc605724-ed7b-40f0-912a-33a28a1bb143": {
+    "name": "Keto cheese crust pizza",
+    "price": 7.99
+  }
+}

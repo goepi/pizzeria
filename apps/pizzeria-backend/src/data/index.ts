@@ -3,12 +3,13 @@ import fs from 'fs';
 import path from 'path';
 import { helpers } from '../utils/index';
 import { CallbackError } from '../types/errors';
-import { Token, User } from './types';
+import { Menu, Token, User } from './types';
 
 type createUserCallback = (err: CallbackError | false, data?: User) => void;
 type createTokenCallback = (err: CallbackError | false, data?: Token) => void;
 type readUserCallback = (err: CallbackError | false, data?: User) => void;
 type readTokenCallback = (err: CallbackError | false, data?: Token) => void;
+type readMenuCallback = (err: CallbackError | false, data?: Menu) => void;
 
 interface DataInterface {
   baseDir: string;
@@ -16,6 +17,7 @@ interface DataInterface {
   create(dir: 'tokens', file: string, data: Token, callback: createTokenCallback): void;
   read(dir: 'users', file: string, callback: readUserCallback): void;
   read(dir: 'tokens', file: string, callback: readTokenCallback): void;
+  read(dir: 'menus', file: string, callback: readMenuCallback): void;
   update(dir: 'users', file: string, data: User, callback: (err: CallbackError | false) => void): void;
   update(dir: 'tokens', file: string, data: Token, callback: (err: CallbackError | false) => void): void;
   delete(dir: 'users' | 'tokens', file: string, callback: (err: CallbackError | false) => void): void;
@@ -60,8 +62,13 @@ dataInterface.create = (
   });
 };
 
-dataInterface.read = (dir: 'users' | 'tokens', file: string, callback: readUserCallback | readTokenCallback) => {
+dataInterface.read = (
+  dir: 'users' | 'tokens' | 'menus',
+  file: string,
+  callback: readUserCallback | readTokenCallback | readMenuCallback
+) => {
   const filePath = `${dataInterface.baseDir}/${dir}/${file}.json`;
+  console.log(filePath);
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (!err && data) {
       const parsedData = helpers.parseJsonToObject(data);

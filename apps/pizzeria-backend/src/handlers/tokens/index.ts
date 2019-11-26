@@ -3,6 +3,7 @@ import { helpers } from '../../utils/index';
 import { DataObject, StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 import { Token } from '../../data/types';
+import { validateExtend, validatePassword, validateTokenId, validateUsername } from '../requestValidation';
 
 export interface TokensHandler {
   get: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError | Token) => void) => void;
@@ -14,10 +15,7 @@ export interface TokensHandler {
 export const tokensHandler = {} as TokensHandler;
 
 tokensHandler.get = (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError | Token) => void) => {
-  const id =
-    typeof data.queryStringObject.id === 'string' && data.queryStringObject.id.trim().length === 20
-      ? data.queryStringObject.id
-      : false;
+  const id = validateTokenId(data.payload.id);
 
   if (id) {
     dataInterface.read('tokens', id, (err, tokenData) => {
@@ -33,12 +31,8 @@ tokensHandler.get = (data: DataObject, callback: (statusCode: StatusCode, payloa
 };
 
 tokensHandler.post = (data: DataObject, callback: (statusCode: StatusCode, payload: CallbackError | Token) => void) => {
-  const username =
-    typeof data.payload.username === 'string' && data.payload.username.length < 30
-      ? data.payload.username.trim()
-      : false;
-  const password =
-    typeof data.payload.password === 'string' && data.payload.password.length > 0 ? data.payload.password : false;
+  const username = validateUsername(data.payload.username);
+  const password = validatePassword(data.payload.password);
 
   if (username && password) {
     dataInterface.read('users', username, (err, userData) => {
@@ -77,9 +71,9 @@ tokensHandler.post = (data: DataObject, callback: (statusCode: StatusCode, paylo
 };
 
 tokensHandler.put = (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => {
-  const id = typeof data.payload.id === 'string' && data.payload.id.trim().length === 20 ? data.payload.id : false;
+  const id = validateTokenId(data.payload.id);
 
-  const extend = typeof data.payload.extend === 'boolean' && data.payload.extend === true;
+  const extend = validateExtend(data.payload.extend);
 
   if (id && extend) {
     dataInterface.read('tokens', id, (err, tokenData) => {
@@ -104,7 +98,7 @@ tokensHandler.put = (data: DataObject, callback: (statusCode: StatusCode, payloa
 };
 
 tokensHandler.delete = (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => {
-  const id = typeof data.payload.id === 'string' && data.payload.id.trim().length === 20 ? data.payload.id : false;
+  const id = validateTokenId(data.payload.id);
 
   if (id) {
     dataInterface.read('tokens', id, (err, tokenData) => {

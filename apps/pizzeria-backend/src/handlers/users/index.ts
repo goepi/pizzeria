@@ -1,11 +1,18 @@
-import { tokensHandler } from './tokens/index';
-import { dataInterface } from '../data/index';
-import { helpers } from '../utils/index';
-import { StatusCode } from '../server/types';
-import { User } from '../data/types';
-import { CallbackError } from '../types/errors';
-import { DataObject } from '../server/types';
-import { verifyToken } from './tokens/helpers';
+import { tokensHandler } from '../tokens/index';
+import { dataInterface } from '../../data/index';
+import { helpers } from '../../utils/index';
+import { StatusCode } from '../../server/types';
+import { User } from '../../data/types';
+import { CallbackError } from '../../types/errors';
+import { DataObject } from '../../server/types';
+import { verifyToken } from '../tokens/helpers';
+import {
+  validateAddress,
+  validateEmail,
+  validatePassword,
+  validateTokenId,
+  validateUsername,
+} from '../requestValidation';
 
 export interface UsersSubHandler {
   get: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError | User) => void) => void;
@@ -16,55 +23,38 @@ export interface UsersSubHandler {
 
 export const usersHandler = {} as UsersSubHandler;
 
-/*
- * GET
- * Required data payload fields:
- */
 usersHandler.get = (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError | User) => void) => {
-  if (typeof data.queryStringObject.username === 'object') {
-    callback(403, { error: 'Invalid username parameter.' });
-  } else if (typeof data.queryStringObject.username === 'string') {
-    const username = data.queryStringObject.username.length < 30 ? data.queryStringObject.username.trim() : false;
-    if (username) {
-      const token = typeof data.headers.token === 'string' ? data.headers.token : false;
-      if (token) {
-        verifyToken(token, username, isTokenValid => {
-          if (isTokenValid) {
-            dataInterface.read('users', username, (err, userData) => {
-              if (err) {
-                callback(500, { error: 'Error retrieving user.' });
-              } else {
-                callback(200, userData);
-              }
-            });
-          } else {
-            callback(403, { error: 'Invalid authentication token.' });
-          }
-        });
-      } else {
-        callback(403, { error: 'Invalid token.' });
-      }
+  const username = validateUsername(data.queryStringObject.username);
+
+  if (username) {
+    const token = typeof data.headers.token === 'string' ? data.headers.token : false;
+    if (token) {
+      verifyToken(token, username, isTokenValid => {
+        if (isTokenValid) {
+          dataInterface.read('users', username, (err, userData) => {
+            if (err) {
+              callback(500, { error: 'Error retrieving user.' });
+            } else {
+              callback(200, userData);
+            }
+          });
+        } else {
+          callback(403, { error: 'Invalid authentication token.' });
+        }
+      });
     } else {
-      callback(403, { error: 'Username must be shorter than 30 characters.' });
+      callback(403, { error: 'Invalid token.' });
     }
   } else {
-    callback(400, { error: 'Missing query string parameter' });
+    callback(403, { error: 'Username must be shorter than 30 characters.' });
   }
 };
 
 usersHandler.post = (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => {
-  const username =
-    typeof data.payload.username === 'string' && data.payload.username.length < 30
-      ? data.payload.username.trim()
-      : false;
-  const password =
-    typeof data.payload.password === 'string' && data.payload.password.length > 0 ? data.payload.password : false;
-  const email =
-    typeof data.payload.email === 'string' && data.payload.email.length > 0 && helpers.validateEmail(data.payload.email)
-      ? data.payload.email
-      : false;
-  const address =
-    typeof data.payload.address === 'string' && data.payload.address.length > 0 ? data.payload.address : false;
+  const username = validateUsername(data.payload.username);
+  const password = validatePassword(data.payload.password);
+  const email = validateEmail(data.payload.email);
+  const address = validateAddress(data.payload.address);
 
   if (username && password && email && address) {
     dataInterface.read('users', username, err => {
@@ -98,19 +88,11 @@ usersHandler.post = (data: DataObject, callback: (statusCode: StatusCode, payloa
 };
 
 usersHandler.put = (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => {
-  const username =
-    typeof data.payload.username === 'string' && data.payload.username.length < 30
-      ? data.payload.username.trim()
-      : false;
-  const password =
-    typeof data.payload.password === 'string' && data.payload.password.length > 0 ? data.payload.password : false;
-  const email =
-    typeof data.payload.email === 'string' && data.payload.email.length > 0 && helpers.validateEmail(data.payload.email)
-      ? data.payload.email
-      : false;
-  const address =
-    typeof data.payload.address === 'string' && data.payload.address.length > 0 ? data.payload.address : false;
-  console.log(data.headers.token);
+  const username = validateUsername(data.payload.username);
+  const password = validatePassword(data.payload.password);
+  const email = validateEmail(data.payload.email);
+  const address = validateAddress(data.payload.address);
+
   if (username) {
     if (email || password || address) {
       const token = typeof data.headers.token === 'string' ? data.headers.token : false;
@@ -155,13 +137,11 @@ usersHandler.put = (data: DataObject, callback: (statusCode: StatusCode, payload
 };
 
 usersHandler.delete = (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => {
-  const username =
-    typeof data.payload.username === 'string' && data.payload.username.length < 30
-      ? data.payload.username.trim()
-      : false;
+  const username = validateUsername(data.payload.username);
 
   if (username) {
-    const token = typeof data.headers.token === 'string' ? data.headers.token : false;
+    const token = validateTokenId(data.headers.token);
+
     if (token) {
       verifyToken(token, username, isTokenValid => {
         if (isTokenValid) {

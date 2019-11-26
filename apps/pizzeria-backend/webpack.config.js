@@ -29,7 +29,7 @@ module.exports = env => {
     },
     module: {
       rules: [
-        { test: /\.tsx?$/, loader: 'ts-loader', options: { configFile: './../../tsconfig.json' } },
+        { test: /\.tsx?$/, loader: 'ts-loader', options: { configFile: './../../tsconfig.webpack.json' } },
         {
           test: /\.js?$/,
           exclude: /(node_modules|dist)/,
