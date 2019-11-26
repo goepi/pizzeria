@@ -78,8 +78,8 @@ usersHandler.post = (data: DataObject, callback: (statusCode: StatusCode, payloa
             email,
             address,
           };
-          dataInterface.create('users', username, newUser, err => {
-            if (!err) {
+          dataInterface.create('users', username, newUser, userCreateErr => {
+            if (!userCreateErr) {
               callback(200);
             } else {
               callback(500, { error: `Error creating new user: ${err}` });
@@ -129,8 +129,8 @@ usersHandler.put = (data: DataObject, callback: (statusCode: StatusCode, payload
                     address: address || userData.address,
                   };
 
-                  dataInterface.update('users', username, newUser, err => {
-                    if (!err) {
+                  dataInterface.update('users', username, newUser, updateErr => {
+                    if (!updateErr) {
                       callback(200);
                     } else {
                       callback(500, { error: 'Error updating user data.' });
@@ -167,8 +167,8 @@ usersHandler.delete = (data: DataObject, callback: (statusCode: StatusCode, payl
         if (isTokenValid) {
           dataInterface.read('users', username, err => {
             if (!err) {
-              dataInterface.delete('users', username, err => {
-                if (!err) {
+              dataInterface.delete('users', username, deleteErr => {
+                if (!deleteErr) {
                   callback(200);
                 } else {
                   callback(500, { error: 'Error deleting user' });

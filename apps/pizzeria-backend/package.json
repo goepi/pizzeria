@@ -21,11 +21,11 @@
     "url": "git+https://github.com/goepi/pizzeria.git"
   },
   "scripts": {
-    "ts:compile": "tsc --noEmit -p ./tsconfig.json",
+    "ts:compile:backend": "tsc --noEmit -p ./tsconfig.json",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist",
     "compile": "tsc -p ./tsconfig.build.json",
-    "webpack": "webpack --mode development --env.ENVIRONMENT=dev",
+    "backend:webpack-dev-server": "webpack --mode=development --env.ENVIRONMENT=dev",
     "server": "nodemon ./dist/index.js"
   },
   "bugs": {

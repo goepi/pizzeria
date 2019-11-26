@@ -5,9 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "lerna": "^3.19.0",
-    "typescript": "^3.7.2",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
+    "typescript": "^3.7.2"
   },
   "devDependencies": {
     "@types/node": "^12.12.11",
@@ -16,7 +14,9 @@
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
     "tslint-react": "^4.1.0",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.2",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   },
   "scripts": {
     "publish": "lerna publish",
@@ -24,7 +24,9 @@
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist",
     "compile": "tsc -p ./tsconfig.build.json",
-    "ts:compile": "tsc --noEmit -p ./tsconfig.json"
+    "ts:compile:backend": "lerna run ts:compile:backend",
+    "start:backend:webpack-dev-server": "lerna run backend:webpack-dev-server --stream",
+    "start:backend": "lerna run server --stream"
   },
   "publishConfig": {
     "access": "public"

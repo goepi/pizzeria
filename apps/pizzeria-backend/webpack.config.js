@@ -4,7 +4,10 @@ const dotenv = require('dotenv');
 
 module.exports = env => {
   // /environments/.env.dev or /environments/.env.prod
-  const envPath = path.join(__dirname) + '/environments/.env.' + env.ENVIRONMENT;
+  console.log('FUC');
+  console.log(path.join(__dirname));
+  console.log(path.resolve(__dirname));
+  const envPath = path.join(__dirname) + '/envs/.env.' + env.ENVIRONMENT;
 
   // Set the path parameter in the dotenv config, get the parsed environment variables
   const fileEnv = dotenv.config({ path: envPath }).parsed;
@@ -17,19 +20,19 @@ module.exports = env => {
 
   envKeys.env = JSON.stringify(env.ENVIRONMENT);
   return {
-    entry: './server/index.ts',
-    watch: true,
+    entry: './src/server/index.ts',
     target: 'node',
+    watch: true,
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: 'index.js',
     },
     module: {
       rules: [
-        { test: /\.tsx?$/, loader: 'ts-loader' },
+        { test: /\.tsx?$/, loader: 'ts-loader', options: { configFile: './../../tsconfig.json' } },
         {
           test: /\.js?$/,
-          exclude: /(node_modules|build)/,
+          exclude: /(node_modules|dist)/,
           use: [{ loader: 'babel-loader' }],
         },
       ],
