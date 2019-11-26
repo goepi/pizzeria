@@ -1,7 +1,7 @@
 // module for storing and editing data saved to disk
 import fs from 'fs';
 import path from 'path';
-import { helpers } from '../utils/index';
+import { helpers } from '../utils/cryptography';
 import { CallbackError } from '../types/errors';
 import { Menu, Token, User } from './types';
 

@@ -1,6 +1,6 @@
 import { tokensHandler } from '../tokens/index';
 import { dataInterface } from '../../data/index';
-import { helpers } from '../../utils/index';
+import { helpers } from '../../utils/cryptography';
 import { StatusCode } from '../../server/types';
 import { User } from '../../data/types';
 import { CallbackError } from '../../types/errors';
@@ -12,7 +12,7 @@ import {
   validatePassword,
   validateTokenId,
   validateUsername,
-} from '../requestValidation';
+} from '../../utils/requestValidation';
 
 export interface UsersSubHandler {
   get: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError | User) => void) => void;

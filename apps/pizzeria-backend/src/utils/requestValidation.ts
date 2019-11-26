@@ -1,5 +1,3 @@
-import { helpers } from '../utils';
-
 export const validateTokenId = (token: any) =>
   typeof token === 'string' && token.trim().length === 20 ? token : false;
 
@@ -12,7 +10,12 @@ export const validatePassword = (password: any) =>
 export const validateExtend = (extend: any) => typeof extend === 'boolean' && extend === true;
 
 export const validateEmail = (email: any) =>
-  typeof email === 'string' && email.length > 0 && helpers.validateEmail(email) ? email : false;
+  typeof email === 'string' && email.length > 0 && validateEmailFormat(email) ? email : false;
+
+const validateEmailFormat = (email: string) => {
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+};
 
 export const validateAddress = (address: any) => (typeof address === 'string' && address.length > 0 ? address : false);
 

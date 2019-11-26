@@ -1,7 +1,7 @@
 import { DataObject, StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 import { Menu } from '../../data/types';
-import { validateMenuId } from '../requestValidation';
+import { validateMenuId } from '../../utils/requestValidation';
 import { dataInterface } from '../../data';
 
 export interface MenusHandler {

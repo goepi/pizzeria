@@ -17,3 +17,8 @@ export interface MenuItem {
 }
 
 export type Menu = MenuItem[];
+
+export interface ShoppingCart {
+  id: string;
+  menuItems: string[];
+}

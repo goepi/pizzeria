@@ -1,9 +1,9 @@
 import { dataInterface } from '../../data/index';
-import { helpers } from '../../utils/index';
+import { helpers } from '../../utils/cryptography';
 import { DataObject, StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 import { Token } from '../../data/types';
-import { validateExtend, validatePassword, validateTokenId, validateUsername } from '../requestValidation';
+import { validateExtend, validatePassword, validateTokenId, validateUsername } from '../../utils/requestValidation';
 
 export interface TokensHandler {
   get: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError | Token) => void) => void;
@@ -42,19 +42,23 @@ tokensHandler.post = (data: DataObject, callback: (statusCode: StatusCode, paylo
           if (hashedPassword === userData.hashedPassword) {
             const tokenId = helpers.createRandomString(20);
 
-            const expires = Date.now() + 1000 * 60 * 60; // one hour
-            const tokenObject = {
-              id: tokenId,
-              username,
-              expires,
-            };
-            dataInterface.create('tokens', tokenId, tokenObject, err => {
-              if (!err) {
-                callback(200, tokenObject);
-              } else {
-                callback(500, { error: 'Error creating token.' });
-              }
-            });
+            if (tokenId) {
+              const expires = Date.now() + 1000 * 60 * 60; // one hour
+              const tokenObject = {
+                id: tokenId,
+                username,
+                expires,
+              };
+              dataInterface.create('tokens', tokenId, tokenObject, err => {
+                if (!err) {
+                  callback(200, tokenObject);
+                } else {
+                  callback(500, { error: 'Error creating token.' });
+                }
+              });
+            } else {
+              callback(500, { error: 'Internal server error.' });
+            }
           } else {
             callback(403, { error: 'Password did not match the stored user password' });
           }
