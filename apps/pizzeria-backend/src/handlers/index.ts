@@ -1,10 +1,10 @@
-import { usersHandler, UsersSubHandler } from './users/index';
-import { tokensHandler, TokensHandler } from './tokens/index';
-import { DataObject, StatusCode } from '../server/types';
-import { CallbackError } from '../types/errors';
 import { Menu, Token, User } from '../data/types';
 import { isValidMethodForHandler } from '../router/helpers';
+import { DataObject, StatusCode } from '../server/types';
+import { CallbackError } from '../types/errors';
 import { MenusHandler, menusHandler } from './menus';
+import { tokensHandler, TokensHandler } from './tokens/index';
+import { usersHandler, UsersSubHandler } from './users/index';
 
 interface Handlers {
   users: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError | User) => void) => void;

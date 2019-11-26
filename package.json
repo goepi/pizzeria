@@ -20,6 +20,7 @@
   },
   "scripts": {
     "publish": "lerna publish",
+    "tslint:fix": "tslint --fix -p .",
     "tsc": "tsc",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist",

@@ -1,8 +1,8 @@
 // module for storing and editing data saved to disk
 import fs from 'fs';
 import path from 'path';
-import { helpers } from '../utils/cryptography';
 import { CallbackError } from '../types/errors';
+import { helpers } from '../utils/cryptography';
 import { Menu, Token, User } from './types';
 
 type createUserCallback = (err: CallbackError | false, data?: User) => void;

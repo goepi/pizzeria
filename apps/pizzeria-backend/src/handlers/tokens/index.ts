@@ -1,8 +1,8 @@
 import { dataInterface } from '../../data/index';
-import { helpers } from '../../utils/cryptography';
+import { Token } from '../../data/types';
 import { DataObject, StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
-import { Token } from '../../data/types';
+import { helpers } from '../../utils/cryptography';
 import { validateExtend, validatePassword, validateTokenId, validateUsername } from '../../utils/requestValidation';
 
 export interface TokensHandler {
@@ -49,8 +49,8 @@ tokensHandler.post = (data: DataObject, callback: (statusCode: StatusCode, paylo
                 username,
                 expires,
               };
-              dataInterface.create('tokens', tokenId, tokenObject, err => {
-                if (!err) {
+              dataInterface.create('tokens', tokenId, tokenObject, tokenCreateErr => {
+                if (!tokenCreateErr) {
                   callback(200, tokenObject);
                 } else {
                   callback(500, { error: 'Error creating token.' });
@@ -84,8 +84,8 @@ tokensHandler.put = (data: DataObject, callback: (statusCode: StatusCode, payloa
       if (!err && tokenData) {
         if (tokenData.expires > Date.now()) {
           tokenData.expires = Date.now() + 1000 * 60 * 60;
-          dataInterface.update('tokens', id, tokenData, err => {
-            if (!err) {
+          dataInterface.update('tokens', id, tokenData, tokenUpdateErr => {
+            if (!tokenUpdateErr) {
               callback(200);
             } else {
               callback(500, { error: 'Error extending token.' });
@@ -107,8 +107,8 @@ tokensHandler.delete = (data: DataObject, callback: (statusCode: StatusCode, pay
   if (id) {
     dataInterface.read('tokens', id, (err, tokenData) => {
       if (!err && tokenData) {
-        dataInterface.delete('tokens', id, err => {
-          if (!err) {
+        dataInterface.delete('tokens', id, tokenDeleteErr => {
+          if (!tokenDeleteErr) {
             callback(200);
           } else {
             callback(500, { error: 'Could not delete token.' });
