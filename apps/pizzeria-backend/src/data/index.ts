@@ -68,7 +68,6 @@ dataInterface.read = (
   callback: readUserCallback | readTokenCallback | readMenuCallback
 ) => {
   const filePath = `${dataInterface.baseDir}/${dir}/${file}.json`;
-  console.log(filePath);
   fs.readFile(filePath, 'utf8', (err, data) => {
     if (!err && data) {
       const parsedData = helpers.parseJsonToObject(data);

@@ -17,16 +17,41 @@
     "type": "git",
     "url": "git+https://github.com/goepi/pizzeria.git"
   },
-  "scripts": {
-    "ts:compile": "tsc --noEmit -p .",
-    "build": "npm run clean && npm run compile",
-    "clean": "rm -rf ./dist",
-    "compile": "tsc -p tsconfig.build.json"
-  },
   "bugs": {
     "url": "https://github.com/goepi/pizzeria/issues"
   },
   "dependencies": {
-    "@goepi/pizzeria-backend": "^0.0.103"
-  }
+    "@goepi/pizzeria-backend": "^0.0.103",
+    "express": "^4.17.1",
+    "react": "^16.12.0",
+    "react-cookie": "^4.0.1",
+    "react-dom": "^16.12.0",
+    "react-router-dom": "^5.1.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.23",
+    "@types/react": "^16.9.13",
+    "@types/react-dom": "^16.9.4",
+    "@types/react-router-dom": "^5.1.3",
+    "react-scripts": "3.2.0"
+  },
+  "scripts": {
+    "start:frontend": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "ts:compile": "tsc --noEmit -p ."
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "https://localhost:5001"
 }

@@ -25,8 +25,9 @@
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist",
     "compile": "tsc -p ./tsconfig.build.json",
-    "backend:webpack-dev-server": "webpack --mode=development --env.ENVIRONMENT=dev",
-    "server": "nodemon --delay 1500ms ./dist/index.js"
+    "start:backend": "run-s start:backend:webpack-watch start:backend:server",
+    "start:backend:webpack-watch": "webpack --mode=development --env.ENVIRONMENT=dev",
+    "start:backend:server": "nodemon --delay 3000ms ./dist/index.js"
   },
   "bugs": {
     "url": "https://github.com/goepi/pizzeria/issues"
@@ -36,6 +37,8 @@
     "@types/node": "^12.12.11",
     "dotenv": "^8.2.0",
     "nodemon": "^2.0.0",
-    "ts-loader": "^6.2.1"
+    "ts-loader": "^6.2.1",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   }
 }

@@ -8,7 +8,6 @@ module.exports = env => {
   // Set the path parameter in the dotenv config, get the parsed environment variables
   const fileEnv = dotenv.config({ path: envPath }).parsed;
 
-  console.log('PATH RESOLVE', path.resolve(__dirname));
   // make the keys have prefix REACT_APP_
   const envKeys = Object.keys(fileEnv).reduce((prev, next) => {
     prev[`ENV_${next}`] = JSON.stringify(fileEnv[next]);

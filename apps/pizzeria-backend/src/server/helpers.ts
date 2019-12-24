@@ -1,3 +1,4 @@
+import Debug from 'debug';
 import { IncomingHttpHeaders, IncomingMessage, ServerResponse } from 'http';
 import { ParsedUrlQuery } from 'querystring';
 import { StringDecoder } from 'string_decoder';
@@ -6,6 +7,8 @@ import { handlers } from '../handlers';
 import { router } from '../router';
 import { helpers } from '../utils/cryptography';
 import { Cookies, DataObject, StatusCode } from './types';
+
+const debug = Debug('app');
 
 export const parseCookies = (request: IncomingMessage) => {
   interface CookieData {
@@ -58,32 +61,29 @@ export const parseRequest = (req: IncomingMessage, callback: ParseRequestCallbac
     const path = parsedUrl.pathname;
     const trimmedPath = (path && path.replace(/^\/+|\/+$/g, '')) || '';
 
-    //
-    if (isPathValid(trimmedPath)) {
-      // Get the query string as an object
-      const queryStringObject = parsedUrl.query;
+    // Get the query string as an object
+    const queryStringObject = parsedUrl.query;
 
-      // Get the headers as an object
-      const headers = req.headers;
+    // Get the headers as an object
+    const headers = req.headers;
 
-      // Get the cookies as an object
-      const cookies = parseCookies(req);
+    // Get the cookies as an object
+    const cookies = parseCookies(req);
 
-      // Get the payload, if any
-      const decoder = new StringDecoder('utf-8');
-      let buffer = '';
-      req.on('data', data => {
-        buffer += decoder.write(data);
-      });
+    // Get the payload, if any
+    const decoder = new StringDecoder('utf-8');
+    let buffer = '';
+    req.on('data', data => {
+      buffer += decoder.write(data);
+    });
 
-      req.on('end', () => {
-        buffer += decoder.end();
+    req.on('end', () => {
+      buffer += decoder.end();
 
-        const payload = helpers.parseJsonToObject(buffer);
+      const payload = helpers.parseJsonToObject(buffer);
 
-        callback({ parsedUrl, method, trimmedPath, queryStringObject, headers, payload, cookies });
-      });
-    }
+      callback({ parsedUrl, method, trimmedPath, queryStringObject, headers, payload, cookies });
+    });
   }
 
   return false;
@@ -104,7 +104,7 @@ const sendResponse = (res: ServerResponse) => (statusCode: StatusCode, payload?:
   res.writeHead(200);
   res.end(payloadString);
 
-  console.log('Response ', statusCode, payloadString);
+  debug('Response ', statusCode, payloadString);
 };
 
 export const handleParsedRequest = (
@@ -126,6 +126,7 @@ export const handleParsedRequest = (
   // route the request to the handler
   chosenHandler(data, sendResponse(res));
 };
+
 export const isPathValid = (trimmedPath: string): trimmedPath is ValidTrimmedPath =>
   Object.keys(router).indexOf(trimmedPath) !== -1;
 

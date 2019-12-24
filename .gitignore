@@ -7,3 +7,7 @@ lerna-debug.log
 /**/dist/
 
 https
+
+apps/pizzeria-backend/src/.data
+
+**/*/build

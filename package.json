@@ -1,37 +1,39 @@
 {
   "name": "@goepi/pizzeria",
   "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
-  "dependencies": {
-    "lerna": "^3.19.0",
-    "typescript": "^3.7.2"
+  "description": "Pizzeria",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/goepi/pizzeria.git"
   },
+  "main": "index.js",
   "devDependencies": {
+    "@types/debug": "^4.1.5",
     "@types/node": "^12.12.11",
     "lerna": "^3.19.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^1.19.1",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
     "tslint-react": "^4.1.0",
-    "typescript": "^3.7.2",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
+    "typescript": "^3.7.2"
   },
   "scripts": {
     "publish": "lerna publish",
+    "bootstrap": "lerna bootstrap",
     "tslint:fix": "tslint --fix -p .",
-    "tsc": "tsc",
-    "build": "npm run clean && npm run compile",
-    "clean": "rm -rf ./dist",
-    "compile": "tsc -p ./tsconfig.build.json",
     "ts:compile:backend": "lerna run ts:compile:backend",
-    "start:backend:webpack-dev-server": "lerna run backend:webpack-dev-server --stream",
-    "start:backend": "lerna run server --stream"
+    "start:backend": "lerna run start:backend --stream",
+    "start:backend:webpack-watch": "lerna run start:backend:webpack-watch --stream",
+    "start:backend:server": "lerna run start:backend:server --stream",
+    "start:frontend": "lerna run start:frontend --stream"
   },
   "publishConfig": {
     "access": "public"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^3.0.0"
+  }
 }
