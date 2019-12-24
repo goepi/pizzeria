@@ -1,7 +1,6 @@
 import { dataInterface } from '../../data/index';
 import { User } from '../../data/types';
 import { StatusCode } from '../../server/types';
-import { DataObject } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 import { helpers } from '../../utils/cryptography';
 import {
@@ -12,18 +11,21 @@ import {
   validateUsername,
 } from '../../utils/requestValidation';
 import { verifyToken } from '../tokens/helpers';
-import { tokensHandler } from '../tokens/index';
+import { ParsedRequest } from '../../server/helpers';
 
 export interface UsersSubHandler {
-  get: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError | User) => void) => void;
-  post: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => void;
-  put: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => void;
-  delete: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => void;
+  get: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | User) => void) => void;
+  post: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => void;
+  put: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => void;
+  delete: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => void;
 }
 
 export const usersHandler = {} as UsersSubHandler;
 
-usersHandler.get = (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError | User) => void) => {
+usersHandler.get = (
+  data: ParsedRequest,
+  callback: (statusCode: StatusCode, payload?: CallbackError | User) => void
+) => {
   const username = validateUsername(data.queryStringObject.username);
 
   if (username) {
@@ -50,7 +52,7 @@ usersHandler.get = (data: DataObject, callback: (statusCode: StatusCode, payload
   }
 };
 
-usersHandler.post = (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => {
+usersHandler.post = (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => {
   const username = validateUsername(data.payload.username);
   const password = validatePassword(data.payload.password);
   const email = validateEmail(data.payload.email);
@@ -87,7 +89,7 @@ usersHandler.post = (data: DataObject, callback: (statusCode: StatusCode, payloa
   }
 };
 
-usersHandler.put = (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => {
+usersHandler.put = (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => {
   const username = validateUsername(data.payload.username);
   const password = validatePassword(data.payload.password);
   const email = validateEmail(data.payload.email);
@@ -136,7 +138,7 @@ usersHandler.put = (data: DataObject, callback: (statusCode: StatusCode, payload
   }
 };
 
-usersHandler.delete = (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => {
+usersHandler.delete = (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => {
   const username = validateUsername(data.payload.username);
 
   if (username) {

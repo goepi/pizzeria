@@ -1,20 +1,24 @@
 import { dataInterface } from '../../data/index';
 import { Token } from '../../data/types';
-import { DataObject, StatusCode } from '../../server/types';
+import { StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 import { helpers } from '../../utils/cryptography';
 import { validateExtend, validatePassword, validateTokenId, validateUsername } from '../../utils/requestValidation';
+import { ParsedRequest } from '../../server/helpers';
 
 export interface TokensHandler {
-  get: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError | Token) => void) => void;
-  post: (data: DataObject, callback: (statusCode: StatusCode, payload: CallbackError | Token) => void) => void;
-  put: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => void;
-  delete: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => void;
+  get: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | Token) => void) => void;
+  post: (data: ParsedRequest, callback: (statusCode: StatusCode, payload: CallbackError | Token) => void) => void;
+  put: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => void;
+  delete: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => void;
 }
 
 export const tokensHandler = {} as TokensHandler;
 
-tokensHandler.get = (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError | Token) => void) => {
+tokensHandler.get = (
+  data: ParsedRequest,
+  callback: (statusCode: StatusCode, payload?: CallbackError | Token) => void
+) => {
   const id = validateTokenId(data.payload.id);
 
   if (id) {
@@ -30,7 +34,10 @@ tokensHandler.get = (data: DataObject, callback: (statusCode: StatusCode, payloa
   }
 };
 
-tokensHandler.post = (data: DataObject, callback: (statusCode: StatusCode, payload: CallbackError | Token) => void) => {
+tokensHandler.post = (
+  data: ParsedRequest,
+  callback: (statusCode: StatusCode, payload: CallbackError | Token) => void
+) => {
   const username = validateUsername(data.payload.username);
   const password = validatePassword(data.payload.password);
 
@@ -74,7 +81,7 @@ tokensHandler.post = (data: DataObject, callback: (statusCode: StatusCode, paylo
   }
 };
 
-tokensHandler.put = (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => {
+tokensHandler.put = (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => {
   const id = validateTokenId(data.payload.id);
 
   const extend = validateExtend(data.payload.extend);
@@ -101,7 +108,7 @@ tokensHandler.put = (data: DataObject, callback: (statusCode: StatusCode, payloa
   }
 };
 
-tokensHandler.delete = (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => {
+tokensHandler.delete = (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError) => void) => {
   const id = validateTokenId(data.payload.id);
 
   if (id) {

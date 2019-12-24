@@ -1,49 +1,99 @@
-import { handlers } from '../handlers';
-import { DataObject, StatusCode } from '../server/types';
+import Debug from 'debug';
+import { ParsedRequest } from '../server/helpers';
+import { StatusCode } from '../server/types';
 import { CallbackError } from '../types/errors';
-
-export const router = {
-  ping: handlers.ping,
-  users: handlers.users,
-  tokens: handlers.tokens,
-  menus: handlers.menus,
-};
+const debug = Debug('app');
 
 type HandlerCallback = <T>(statusCode: StatusCode, payload?: CallbackError | T) => void;
 
-type Handler = (data: DataObject, callback: HandlerCallback) => void;
+type Handler = (data: ParsedRequest, callback: HandlerCallback) => void;
 
 interface Route {
   regex: RegExp;
   callback: Handler;
 }
 
+interface Routes {
+  get: Route[];
+  post: Route[];
+  put: Route[];
+  delete: Route[];
+}
+
+type RouteMethod = keyof Routes;
+
+const isMethodValid = (method: string): method is RouteMethod =>
+  ['get', 'post', 'put', 'delete'].indexOf(method) !== -1;
+
 export class Router {
-  private getRoutes: Route[] = [];
-  private postRoutes: Route[] = [];
-  private putRoutes: Route[] = [];
-  private deleteRoutes: Route[] = [];
+  private routes: Routes = {
+    get: [],
+    post: [],
+    put: [],
+    delete: [],
+  };
+
+  private getRegexFromPath = (path: string) => {
+    // remove leading and trailing slashes
+    const trimmedPath = (path && path.replace(/^\/+|\/+$/g, '')) || '';
+
+    const parts = trimmedPath.split('/');
+
+    let regex = '^';
+
+    parts.forEach(p => {
+      if (p.charAt(0) === ':') {
+        regex = `${regex}${regex.length !== 1 ? '/' : ''}(?<${p.substr(1)}>.+)`;
+      } else {
+        regex = `${regex}${regex.length !== 1 ? '/' : ''}${p}`;
+      }
+    });
+    regex = `${regex}$`;
+
+    return regex;
+  };
 
   public get = <T>(path: string, callback: Handler) => {
+    this.addRoute('get', path, callback);
+  };
+
+  public post = <T>(path: string, callback: Handler) => {
+    this.addRoute('post', path, callback);
+  };
+
+  public put = <T>(path: string, callback: Handler) => {
+    this.addRoute('put', path, callback);
+  };
+
+  public delete = <T>(path: string, callback: Handler) => {
+    this.addRoute('delete', path, callback);
+  };
+
+  public addRoute = (method: RouteMethod, path: string, callback: Handler) => {
+    const regex = this.getRegexFromPath(path);
+
     const route = {
-      regex: new RegExp(path),
+      regex: new RegExp(regex),
       callback,
     };
 
-    this.getRoutes = [...this.getRoutes, route];
+    this.routes[method] = [...this.routes[method], route];
   };
 
-  public handleRequest = (data: DataObject, callback: HandlerCallback) => {
-    switch (data.method) {
-      case 'get': {
-        this.handleGet(data, callback);
-      }
+  public handleRequest = (data: ParsedRequest, callback: HandlerCallback) => {
+    if (isMethodValid(data.method)) {
+      this.checkRoutes(this.routes[data.method], data, callback);
+    } else {
+      callback(403, { error: 'Invalid HTTP method' });
     }
   };
 
-  public handleGet(data: DataObject, callback: HandlerCallback) {
-    this.getRoutes.forEach(r => {
-      r.regex.exec(data.path);
+  public checkRoutes = (routes: Route[], data: ParsedRequest, callback: HandlerCallback) => {
+    routes.forEach(r => {
+      const result = r.regex.exec(data.path);
+
+      debug(result);
+      r.callback(data, callback);
     });
-  }
+  };
 }

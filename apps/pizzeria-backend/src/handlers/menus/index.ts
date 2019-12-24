@@ -1,11 +1,12 @@
 import { dataInterface } from '../../data';
 import { Menu } from '../../data/types';
-import { DataObject, StatusCode } from '../../server/types';
+import { StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 import { validateMenuId } from '../../utils/requestValidation';
+import { ParsedRequest } from '../../server/helpers';
 
 export interface MenusHandler {
-  get: (data: DataObject, callback: (statusCode: StatusCode, payload?: CallbackError | Menu) => void) => void;
+  get: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | Menu) => void) => void;
 }
 
 export const menusHandler: MenusHandler = {

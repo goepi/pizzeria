@@ -1,14 +1,9 @@
-import Debug from 'debug';
 import { IncomingHttpHeaders, IncomingMessage, ServerResponse } from 'http';
 import { ParsedUrlQuery } from 'querystring';
 import { StringDecoder } from 'string_decoder';
 import { default as url, UrlWithParsedQuery } from 'url';
-import { handlers } from '../handlers';
-import { router } from '../router';
 import { helpers } from '../utils/cryptography';
-import { Cookies, DataObject, StatusCode } from './types';
-
-const debug = Debug('app');
+import { Cookies } from './types';
 
 export const parseCookies = (request: IncomingMessage) => {
   interface CookieData {
@@ -45,8 +40,6 @@ export const addResponseCookies = (res: ServerResponse, cookies: Cookies) => {
   res.setHeader('Set-Cookie', cookiesString);
 };
 
-export type ValidTrimmedPath = keyof typeof router;
-
 export type ParseRequestCallback = (parsedRequest: ParsedRequest) => void;
 
 export const parseRequest = (req: IncomingMessage, callback: ParseRequestCallback) => {
@@ -58,8 +51,7 @@ export const parseRequest = (req: IncomingMessage, callback: ParseRequestCallbac
 
   if (parsedUrl && method) {
     // Get the path
-    const path = parsedUrl.pathname;
-    const trimmedPath = (path && path.replace(/^\/+|\/+$/g, '')) || '';
+    const path = parsedUrl.pathname || '/';
 
     // Get the query string as an object
     const queryStringObject = parsedUrl.query;
@@ -82,58 +74,17 @@ export const parseRequest = (req: IncomingMessage, callback: ParseRequestCallbac
 
       const payload = helpers.parseJsonToObject(buffer);
 
-      callback({ parsedUrl, method, trimmedPath, queryStringObject, headers, payload, cookies });
+      callback({ parsedUrl, method, path, queryStringObject, headers, payload, cookies });
     });
   }
 
   return false;
 };
 
-const sendResponse = (res: ServerResponse) => (statusCode: StatusCode, payload?: any) => {
-  // use  status code called back by handler or use default status code 200
-  statusCode = typeof statusCode === 'number' ? statusCode : 200;
-  // use payload called back by handler or use default: empty object
-  payload = typeof payload === 'object' ? payload : {};
-
-  // convert payload to string, to be sent back to user
-  const payloadString = JSON.stringify(payload);
-
-  // Send the response
-  // writeHead writes status code to the response
-  res.setHeader('Content-Type', 'application/json');
-  res.writeHead(200);
-  res.end(payloadString);
-
-  debug('Response ', statusCode, payloadString);
-};
-
-export const handleParsedRequest = (
-  { method, headers, trimmedPath, queryStringObject, payload, cookies }: ParsedRequest,
-  res: ServerResponse
-) => {
-  // construct data object to send to the handler
-  const data: DataObject = {
-    queryStringObject,
-    method,
-    headers,
-    payload,
-    cookies,
-  };
-
-  // given the path in the url, choose which handler should handle this request
-  const chosenHandler = typeof router[trimmedPath] !== 'undefined' ? router[trimmedPath] : handlers.notFound;
-
-  // route the request to the handler
-  chosenHandler(data, sendResponse(res));
-};
-
-export const isPathValid = (trimmedPath: string): trimmedPath is ValidTrimmedPath =>
-  Object.keys(router).indexOf(trimmedPath) !== -1;
-
 export interface ParsedRequest {
   parsedUrl: UrlWithParsedQuery;
   method: string;
-  trimmedPath: ValidTrimmedPath;
+  path: string;
   queryStringObject: ParsedUrlQuery;
   headers: IncomingHttpHeaders;
   payload: any;

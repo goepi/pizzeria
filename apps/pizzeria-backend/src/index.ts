@@ -1,14 +1,28 @@
-import chalk from 'chalk';
-import Debug from 'debug';
-import { httpServer } from './server/httpServer';
-import { httpsServer } from './server/httpsServer';
+import fs from 'fs';
+import { ServerOptions } from 'https';
+import path from 'path';
+import { Router } from './router';
+import { App } from './server';
+import { tokensHandler } from './handlers/tokens';
 
-const debug = Debug('app');
+const httpsServerOptions: ServerOptions = {
+  key: fs.readFileSync(path.resolve(__dirname, '../https/key.pem')),
+  cert: fs.readFileSync(path.resolve(__dirname, '../https/cert.pem')),
+};
 
-httpServer.listen(ENV_HTTP_PORT, () => {
-  debug(`${chalk.cyan('HTTP')} server listening on port ${chalk.green(ENV_HTTP_PORT)}`);
-});
+// define routes
+const router = new Router();
+router.get('/tokens', tokensHandler.get);
+router.post('/tokens', tokensHandler.post);
 
-httpsServer.listen(ENV_HTTPS_PORT, () => {
-  debug(`${chalk.cyan('HTTPS')} server listening on port ${chalk.green(ENV_HTTPS_PORT)}`);
+// initialize apps
+const httpsApp = new App(router, httpsServerOptions);
+// const httpApp = new App(router);
+
+// start servers
+httpsApp.listen();
+// httpApp.listen();
+
+process.once('SIGUSR2', () => {
+  process.kill(process.pid, 'SIGUSR2');
 });
