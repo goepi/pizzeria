@@ -81,6 +81,10 @@ export const parseRequest = (req: IncomingMessage, callback: ParseRequestCallbac
   return false;
 };
 
+export interface PathVariables {
+  [pathVariable: string]: string;
+}
+
 export interface ParsedRequest {
   parsedUrl: UrlWithParsedQuery;
   method: string;
@@ -89,4 +93,5 @@ export interface ParsedRequest {
   headers: IncomingHttpHeaders;
   payload: any;
   cookies: Cookies;
+  pathVariables?: PathVariables;
 }

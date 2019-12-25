@@ -52,6 +52,7 @@ export class App {
     // Send the response
     // writeHead writes status code to the response
     res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.writeHead(200);
     res.end(payloadString);
 

@@ -1,9 +1,11 @@
 import fs from 'fs';
 import { ServerOptions } from 'https';
 import path from 'path';
+import { menusHandler } from './handlers/menus';
+import { tokensHandler } from './handlers/tokens';
+import { usersHandler } from './handlers/users';
 import { Router } from './router';
 import { App } from './server';
-import { tokensHandler } from './handlers/tokens';
 
 const httpsServerOptions: ServerOptions = {
   key: fs.readFileSync(path.resolve(__dirname, '../https/key.pem')),
@@ -14,14 +16,23 @@ const httpsServerOptions: ServerOptions = {
 const router = new Router();
 router.get('/tokens', tokensHandler.get);
 router.post('/tokens', tokensHandler.post);
+router.put('/tokens', tokensHandler.put);
+router.delete('/tokens', tokensHandler.delete);
+
+router.get('/users', usersHandler.get);
+router.post('/users', usersHandler.post);
+router.put('/users', usersHandler.put);
+router.delete('/users', usersHandler.delete);
+
+router.get('/menus', menusHandler.get);
 
 // initialize apps
 const httpsApp = new App(router, httpsServerOptions);
-// const httpApp = new App(router);
+const httpApp = new App(router);
 
 // start servers
 httpsApp.listen();
-// httpApp.listen();
+httpApp.listen();
 
 process.once('SIGUSR2', () => {
   process.kill(process.pid, 'SIGUSR2');

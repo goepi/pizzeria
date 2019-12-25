@@ -2,7 +2,7 @@ import Debug from 'debug';
 import { ParsedRequest } from '../server/helpers';
 import { StatusCode } from '../server/types';
 import { CallbackError } from '../types/errors';
-const debug = Debug('app');
+const debug = Debug('app:router');
 
 type HandlerCallback = <T>(statusCode: StatusCode, payload?: CallbackError | T) => void;
 
@@ -43,9 +43,9 @@ export class Router {
 
     parts.forEach(p => {
       if (p.charAt(0) === ':') {
-        regex = `${regex}${regex.length !== 1 ? '/' : ''}(?<${p.substr(1)}>.+)`;
+        regex = `${regex}/(?<${p.substr(1)}>.+)`;
       } else {
-        regex = `${regex}${regex.length !== 1 ? '/' : ''}${p}`;
+        regex = `/${p}`;
       }
     });
     regex = `${regex}$`;
@@ -89,11 +89,13 @@ export class Router {
   };
 
   public checkRoutes = (routes: Route[], data: ParsedRequest, callback: HandlerCallback) => {
-    routes.forEach(r => {
+    routes.some(r => {
       const result = r.regex.exec(data.path);
-
-      debug(result);
-      r.callback(data, callback);
+      debug(r.regex, result);
+      if (result) {
+        r.callback({ ...data, pathVariables: result.groups }, callback);
+        return true;
+      }
     });
   };
 }
