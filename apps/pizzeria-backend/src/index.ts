@@ -6,6 +6,7 @@ import { tokensHandler } from './handlers/tokens';
 import { usersHandler } from './handlers/users';
 import { Router } from './router';
 import { App } from './server';
+import { cartsHandler } from './handlers/carts';
 
 const httpsServerOptions: ServerOptions = {
   key: fs.readFileSync(path.resolve(__dirname, '../https/key.pem')),
@@ -25,6 +26,10 @@ router.put('/users', usersHandler.put);
 router.delete('/users', usersHandler.delete);
 
 router.get('/menus', menusHandler.get);
+
+router.get('/users/:username/cart', cartsHandler.get);
+router.put('/users/:username/cart', cartsHandler.put);
+router.delete('/users/:username/cart', cartsHandler.delete);
 
 // initialize apps
 const httpsApp = new App(router, httpsServerOptions);

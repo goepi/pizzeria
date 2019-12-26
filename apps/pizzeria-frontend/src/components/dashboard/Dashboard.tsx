@@ -4,8 +4,13 @@ import { CartContext } from '../../context/cart';
 import { Menu } from './Menu';
 import { NavBar } from './NavBar';
 
+export interface Product {
+  name: string;
+  price: number;
+}
+
 export interface Products {
-  [product: string]: { name: string; price: number };
+  [product: string]: Product;
 }
 
 interface State {

@@ -3,10 +3,6 @@ import { dataInterface } from '../../data';
 import { Token } from '../../data/types';
 
 export const verifyToken = (id: string, username: string, callback: (error: boolean) => void) => {
-  if (typeof id !== 'string') {
-    callback(false);
-    return;
-  }
   // Lookup the token
   dataInterface.read('tokens', id, (err, tokenData?: Token) => {
     if (!err && tokenData) {

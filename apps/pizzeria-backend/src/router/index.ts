@@ -45,7 +45,7 @@ export class Router {
       if (p.charAt(0) === ':') {
         regex = `${regex}/(?<${p.substr(1)}>.+)`;
       } else {
-        regex = `/${p}`;
+        regex = `${regex}/${p}`;
       }
     });
     regex = `${regex}$`;
@@ -91,7 +91,7 @@ export class Router {
   public checkRoutes = (routes: Route[], data: ParsedRequest, callback: HandlerCallback) => {
     routes.some(r => {
       const result = r.regex.exec(data.path);
-      debug(r.regex, result);
+      debug(r.regex, data.path, result);
       if (result) {
         r.callback({ ...data, pathVariables: result.groups }, callback);
         return true;

@@ -1,3 +1,7 @@
+import { Cart } from '../handlers/carts';
+import { dataInterface } from '../data';
+import { Menu } from '../data/types';
+
 export const validateTokenId = (token: any) =>
   typeof token === 'string' && token.trim().length === 20 ? token : false;
 
@@ -20,3 +24,29 @@ const validateEmailFormat = (email: string) => {
 export const validateAddress = (address: any) => (typeof address === 'string' && address.length > 0 ? address : false);
 
 export const validateMenuId = (menuId: any) => (typeof menuId === 'string' ? menuId.trim() : false);
+
+export const validateCart = (cart: any, callback) => {
+  if (typeof cart === 'object') {
+    getMenu(menu => {
+      if (menu) {
+        const isCartValid = Object.keys(cart).every(
+          k => typeof cart[k] === 'number' && Object.keys(menu).indexOf(k) !== -1
+        );
+
+        callback(isCartValid);
+      } else {
+        callback(false);
+      }
+    });
+  }
+};
+
+export const getMenu = (callback: (menu: Menu | false) => void) => {
+  dataInterface.read('menus', 'springMenu', (err, menuData) => {
+    if (!err && menuData) {
+      callback(menuData);
+    } else {
+      callback(false);
+    }
+  });
+};

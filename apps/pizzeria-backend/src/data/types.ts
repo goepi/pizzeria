@@ -1,8 +1,11 @@
+import { Cart } from '../handlers/carts';
+
 export interface User {
   username: string;
   hashedPassword: string;
   email: string;
   address: string;
+  cart: Cart;
 }
 
 export interface Token {
@@ -16,9 +19,6 @@ export interface MenuItem {
   price: number;
 }
 
-export type Menu = MenuItem[];
-
-export interface ShoppingCart {
-  id: string;
-  menuItems: string[];
+export interface Menu {
+  [menuItemId: string]: MenuItem;
 }

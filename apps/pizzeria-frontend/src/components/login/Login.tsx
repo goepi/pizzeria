@@ -16,15 +16,14 @@ interface State {
 export class Login extends React.Component<RouteComponentProps, State> {
   public state: State = {
     signIn: true,
-    username: undefined,
-    password: undefined,
+    username: 'c',
+    password: 'p',
     email: undefined,
     address: undefined,
     redirectToReferrer: false,
   };
 
-  private signIn = async () => {
-    const { username, password } = this.state;
+  private signIn = async (username: string | undefined, password: string | undefined) => {
     if (username && password) {
       const result = await Auth.login(username, password);
       if (result) {
@@ -33,13 +32,13 @@ export class Login extends React.Component<RouteComponentProps, State> {
     }
   };
 
-  private async signUp() {
+  private signUp = async () => {
     const { username, password, email, address } = this.state;
     if (username && password && email && address) {
       await Auth.signUp(username, password, address, email);
-      await Auth.login(username, password);
+      this.signIn(username, password);
     }
-  }
+  };
 
   private toggleSignIn = () => this.setState((s: State) => ({ signIn: !s.signIn }));
 
@@ -55,9 +54,19 @@ export class Login extends React.Component<RouteComponentProps, State> {
     return (
       <div>
         {this.state.signIn ? (
-          <SignInForm setUsername={this.setUsername} setPassword={this.setPassword} onSubmit={this.signIn} />
+          <SignInForm
+            username={this.state.username}
+            password={this.state.password}
+            setUsername={this.setUsername}
+            setPassword={this.setPassword}
+            onSubmit={() => this.signIn(this.state.username, this.state.password)}
+          />
         ) : (
           <SignUpForm
+            username={this.state.username}
+            password={this.state.password}
+            email={this.state.email}
+            address={this.state.address}
             setUsername={this.setUsername}
             setPassword={this.setPassword}
             setAddress={this.setAddress}

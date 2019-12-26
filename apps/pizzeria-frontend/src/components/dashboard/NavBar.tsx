@@ -7,7 +7,7 @@ export const NavBar = () => (
       <div
         style={{
           width: '100%',
-          height: 150,
+          height: 75,
           backgroundColor: 'black',
           color: 'white',
           display: 'flex',

@@ -69,6 +69,7 @@ usersHandler.post = (data: ParsedRequest, callback: (statusCode: StatusCode, pay
             hashedPassword,
             email,
             address,
+            cart: {},
           };
           dataInterface.create('users', username, newUser, userCreateErr => {
             if (!userCreateErr) {
