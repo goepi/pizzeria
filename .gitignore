@@ -9,5 +9,6 @@ lerna-debug.log
 https
 
 apps/pizzeria-backend/src/.data
+apps/pizzeria-backend/envs/
 
 **/*/build

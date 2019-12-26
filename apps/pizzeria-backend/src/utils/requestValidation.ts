@@ -25,7 +25,7 @@ export const validateAddress = (address: any) => (typeof address === 'string' &&
 
 export const validateMenuId = (menuId: any) => (typeof menuId === 'string' ? menuId.trim() : false);
 
-export const validateCart = (cart: any, callback) => {
+export const validateCart = (cart: any, callback: (isCartValid: boolean) => void) => {
   if (typeof cart === 'object') {
     getMenu(menu => {
       if (menu) {

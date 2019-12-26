@@ -1,5 +1,4 @@
 import { dataInterface } from '../../data';
-import { Token } from '../../data/types';
 import { ParsedRequest } from '../../server/helpers';
 import { StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
