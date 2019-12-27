@@ -1,5 +1,6 @@
 import { dataInterface } from '../../data/index';
 import { User } from '../../data/types';
+import { ParsedRequest } from '../../server/helpers';
 import { StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 import { helpers } from '../../utils/cryptography';
@@ -11,7 +12,6 @@ import {
   validateUsername,
 } from '../../utils/requestValidation';
 import { verifyToken } from '../tokens/helpers';
-import { ParsedRequest } from '../../server/helpers';
 
 export interface UsersSubHandler {
   get: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | User) => void) => void;
@@ -70,6 +70,7 @@ usersHandler.post = (data: ParsedRequest, callback: (statusCode: StatusCode, pay
             email,
             address,
             cart: {},
+            orders: [],
           };
           dataInterface.create('users', username, newUser, userCreateErr => {
             if (!userCreateErr) {

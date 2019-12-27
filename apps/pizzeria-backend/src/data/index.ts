@@ -8,6 +8,7 @@ import { Menu, Order, Token, User } from './types';
 type createUserCallback = (err: CallbackError | false, data?: User) => void;
 type createTokenCallback = (err: CallbackError | false, data?: Token) => void;
 type createOrderCallback = (err: CallbackError | false, data?: Order) => void;
+
 type readUserCallback = (err: CallbackError | false, data?: User) => void;
 type readTokenCallback = (err: CallbackError | false, data?: Token) => void;
 type readMenuCallback = (err: CallbackError | false, data?: Menu) => void;

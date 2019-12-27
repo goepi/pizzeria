@@ -1,17 +1,46 @@
 import { dataInterface } from '../../data';
-import { Order } from '../../data/types';
+import { Order, UserOrders } from '../../data/types';
 import { ParsedRequest } from '../../server/helpers';
 import { StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 import { helpers } from '../../utils/cryptography';
 import { getMenu, validateTokenId, validateUsername } from '../../utils/requestValidation';
-import { Cart } from '../carts';
+import { addUserOrder, Cart, resetUserCart } from '../carts';
 import { makePayment } from '../payment';
 import { verifyToken } from '../tokens/helpers';
+import Debug from 'debug';
 
 const debug = Debug('app:orders');
 
 export const ordersHandler = {
+  get: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | Order[]) => void) => {
+    const id = validateTokenId(data.headers.token);
+    const username = validateUsername(data.pathVariables && data.pathVariables.username);
+
+    if (id && username) {
+      verifyToken(id, username, isTokenValid => {
+        if (isTokenValid) {
+          dataInterface.read('users', username, (err, userData) => {
+            if (!err && userData) {
+              getOrders(userData.orders, (ordersErr, orders) => {
+                if (!ordersErr) {
+                  callback(200, orders);
+                } else {
+                  callback(500, { error: 'Error getting orders.' });
+                }
+              });
+            } else {
+              callback(500, { error: 'Error reading user orders.' });
+            }
+          });
+        } else {
+          callback(403, { error: 'Invalid token.' });
+        }
+      });
+    } else {
+      callback(403, { error: 'Invalid request parameters.' });
+    }
+  },
   post: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | Cart) => void) => {
     const id = validateTokenId(data.headers.token);
     const username = validateUsername(data.pathVariables && data.pathVariables.username);
@@ -23,28 +52,33 @@ export const ordersHandler = {
             if (!userErr && userData) {
               calculateCartPaymentAmount(userData.cart, (amount: number | false) => {
                 if (amount) {
-                  createOrder(username, userData.cart, amount, (err: boolean, id?: string) => {
-                    if (!err && id) {
-                      makePayment(amount, 'usd', (paymentErr: CallbackError | false) => {
+                  createOrder(username, userData.cart, amount, (err, newOrderId) => {
+                    if (!err && newOrderId) {
+                      makePayment(amount * 100, 'usd', (paymentErr: CallbackError | false) => {
                         if (!paymentErr) {
-                          updateOrder(id, { paid: true }, (updateErr, updatedOrder) => {
+                          updateOrder(newOrderId, { paid: true }, (updateErr, updatedOrder) => {
                             if (!err) {
-                              // success
                             } else {
                               // issue updating db
                             }
                           });
+                          resetUserCart(username, resetErr => {
+                            if (!resetErr) {
+                            } else {
+                              // issue resetting cart
+                            }
+                          });
                           callback(200);
                         } else {
-                          callback(500, { error: 'Error processing payment.' });
+                          callback(500, { error: `Error making payment ${paymentErr.error}` });
                         }
                       });
                     } else {
-                      callback(500, { error: 'Error processing payment.' });
+                      callback(500, { error: `Error processing payment: create order: ${err.error}` });
                     }
                   });
                 } else {
-                  callback(500, { error: 'Error processing payment.' });
+                  callback(500, { error: 'Error processing payment amount' });
                 }
               });
             } else {
@@ -61,7 +95,12 @@ export const ordersHandler = {
   },
 };
 
-const createOrder = (username: string, cart: Cart, price: number, callback: (err: boolean, id?: string) => void) => {
+const createOrder = (
+  username: string,
+  cart: Cart,
+  price: number,
+  callback: (err: CallbackError | false, id?: string) => void
+) => {
   const id = helpers.createRandomString(20);
 
   if (id) {
@@ -74,13 +113,19 @@ const createOrder = (username: string, cart: Cart, price: number, callback: (err
     };
     dataInterface.create('orders', id, newOrder, (err: CallbackError | false) => {
       if (!err) {
-        callback(false, id);
+        addUserOrder(username, id, updateUserErr => {
+          if (!updateUserErr) {
+            callback(false, id);
+          } else {
+            callback({ error: 'Error updating user orders' });
+          }
+        });
       } else {
-        callback(true);
+        callback(err);
       }
     });
   } else {
-    callback(true);
+    callback({ error: 'Error creating id' });
   }
 };
 
@@ -114,4 +159,31 @@ const calculateCartPaymentAmount = (cart: Cart, callback: (amount: number | fals
       callback(false);
     }
   });
+};
+
+export const getOrders = async (
+  orderIds: string[],
+  callback: (err: CallbackError | false, orders?: Order[]) => void
+) => {
+  const orderPromises: Array<Promise<Order>> = [];
+  orderIds.forEach(id => {
+    orderPromises.push(
+      new Promise((resolve, reject) => {
+        dataInterface.read('orders', id, (err, order) => {
+          if (!err && order) {
+            resolve(order);
+          } else {
+            reject({ error: `Could not get order ${id}` });
+          }
+        });
+      })
+    );
+  });
+
+  try {
+    const orders = await Promise.all(orderPromises);
+    callback(false, orders);
+  } catch (e) {
+    callback({ error: e.error });
+  }
 };

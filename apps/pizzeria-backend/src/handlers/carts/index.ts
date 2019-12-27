@@ -5,6 +5,7 @@ import { CallbackError } from '../../types/errors';
 import { validateCart, validateTokenId, validateUsername } from '../../utils/requestValidation';
 import { verifyToken } from '../tokens/helpers';
 import Debug from 'debug';
+import { User } from '../../data/types';
 
 const debug = Debug('app:cart');
 
@@ -67,6 +68,38 @@ export const cartsHandler: CartsHandler = {
   },
 };
 
+export const resetUserCart = (username: string, callback: (err: boolean) => void) => {
+  dataInterface.read('users', username, (err, userData) => {
+    if (!err && userData) {
+      const newUserData = { ...userData, cart: {} };
+      updateUserData(username, newUserData, callback);
+    } else {
+      callback(true);
+    }
+  });
+};
+
+export const addUserOrder = (username: string, orderId: string, callback: (err: boolean) => void) => {
+  dataInterface.read('users', username, (err, userData) => {
+    if (!err && userData) {
+      const newUserData = { ...userData, orders: [...userData.orders, orderId] };
+      updateUserData(username, newUserData, callback);
+    } else {
+      callback(true);
+    }
+  });
+};
+
+export const updateUserData = (username: string, newUserData: User, callback: (err: boolean) => void) => {
+  dataInterface.update('users', username, newUserData, updateErr => {
+    if (!updateErr) {
+      callback(false);
+    } else {
+      callback(true);
+    }
+  });
+};
+
 const validateAndModifyCart = (
   data: ParsedRequest,
   getNewCart: (oldCart: Cart, cart: Cart) => Cart,
@@ -75,7 +108,6 @@ const validateAndModifyCart = (
   const id = validateTokenId(data.headers.token);
   const username = validateUsername(data.pathVariables && data.pathVariables.username);
   if (id && username) {
-    debug('HERE', data.payload.cart);
     validateCart(data.payload.cart, (isCartValid: boolean) => {
       debug(isCartValid);
       if (isCartValid) {

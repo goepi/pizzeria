@@ -31,7 +31,7 @@ export const helpers = {
   },
   // Create a string of random alphanumeric characters of a given length
   createRandomString: (strLength: number) => {
-    if (typeof strLength === 'number' && strLength > 0) {
+    if (strLength > 0) {
       // Define all possible characters that could go into a string
       const possibleCharacters = 'abcdefghijklmnopqrstuvwxyz0123456789';
       // Start the string

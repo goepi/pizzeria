@@ -6,6 +6,7 @@ export interface User {
   email: string;
   address: string;
   cart: Cart;
+  orders: string[];
 }
 
 export interface Token {
@@ -29,4 +30,9 @@ export interface Order {
   cart: Cart;
   price: number;
   paid: boolean;
+}
+
+export interface UserOrders {
+  orderIds: string[];
+  username: string;
 }
