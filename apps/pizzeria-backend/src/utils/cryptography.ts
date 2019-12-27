@@ -13,7 +13,7 @@ export const helpers = {
   hash: (str: string) => {
     if (typeof str === 'string' && str.length) {
       return crypto
-        .createHmac('sha256', ENV_HASHING_SECRET)
+        .createHmac('sha256', 'ENV_HASHING_SECRET')
         .update(str)
         .digest('hex');
     } else {

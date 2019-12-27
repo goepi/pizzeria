@@ -9,6 +9,7 @@ import { addUserOrder, Cart, resetUserCart } from '../carts';
 import { makePayment } from '../payment';
 import { verifyToken } from '../tokens/helpers';
 import Debug from 'debug';
+import { sendEmail, sendSuccessfulOrderEmail } from '../mail';
 
 const debug = Debug('app:orders');
 
@@ -68,13 +69,19 @@ export const ordersHandler = {
                               // issue resetting cart
                             }
                           });
+                          sendSuccessfulOrderEmail(userData.email, sendEmailErr => {
+                            if (!sendEmailErr) {
+                            } else {
+                              // issue sending confirmation email
+                            }
+                          });
                           callback(200);
                         } else {
                           callback(500, { error: `Error making payment ${paymentErr.error}` });
                         }
                       });
                     } else {
-                      callback(500, { error: `Error processing payment: create order: ${err.error}` });
+                      callback(500, { error: `Error processing payment: create order: ${err && err.error}` });
                     }
                   });
                 } else {
