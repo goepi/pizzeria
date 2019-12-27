@@ -24,6 +24,7 @@ export class Dashboard extends React.Component<any, any> {
 
   public componentDidMount() {
     this.getMenu();
+    this.context.initializeCart();
   }
 
   public getMenu = () => {

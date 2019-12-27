@@ -3,6 +3,7 @@ import * as api from '../api/';
 class Authentication {
   private token: string | null = null;
   private expires: number | null = null;
+  private username: string | null = null;
 
   public signUp = async (username: string, password: string, address: string, email: string) => {
     try {
@@ -16,9 +17,13 @@ class Authentication {
   public async login(username: string, password: string) {
     try {
       const result = await api.login(username, password);
-      this.token = result.id;
-      this.expires = result.expires;
-      return true;
+      if (result) {
+        this.token = result.id;
+        this.expires = result.expires;
+        this.username = username;
+        return true;
+      }
+      return false;
     } catch (e) {
       return false;
     }
@@ -38,6 +43,9 @@ class Authentication {
   public isAuthenticated = () => {
     return this.token !== null && this.expires !== null && this.expires >= Date.now();
   };
+
+  public getUsername = () => this.username;
+  public getAuthToken = () => this.token;
 }
 
 export const Auth = new Authentication();

@@ -5,7 +5,7 @@ import { ParsedRequest } from '../../server/helpers';
 import { StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 
-const makePayment = (amount: number, currency: string, callback: (error: CallbackError | false) => void) => {
+export const makePayment = (amount: number, currency: string, callback: (error: CallbackError | false) => void) => {
   const stringPayload = querystring.stringify({
     amount,
     currency,

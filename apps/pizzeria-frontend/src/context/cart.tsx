@@ -7,6 +7,7 @@ export interface Cart {
 export interface CartContext {
   cart: Cart;
   addProductToCart?: (id: string) => void;
+  initializeCart?: () => void;
 }
 
 export const CartContext = React.createContext<CartContext>({ cart: {} });

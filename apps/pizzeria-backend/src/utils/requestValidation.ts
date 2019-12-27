@@ -1,4 +1,3 @@
-import { Cart } from '../handlers/carts';
 import { dataInterface } from '../data';
 import { Menu } from '../data/types';
 
@@ -32,12 +31,13 @@ export const validateCart = (cart: any, callback: (isCartValid: boolean) => void
         const isCartValid = Object.keys(cart).every(
           k => typeof cart[k] === 'number' && Object.keys(menu).indexOf(k) !== -1
         );
-
         callback(isCartValid);
       } else {
         callback(false);
       }
     });
+  } else {
+    callback(false);
   }
 };
 

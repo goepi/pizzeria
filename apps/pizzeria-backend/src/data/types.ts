@@ -22,3 +22,11 @@ export interface MenuItem {
 export interface Menu {
   [menuItemId: string]: MenuItem;
 }
+
+export interface Order {
+  id: string;
+  username: string;
+  cart: Cart;
+  price: number;
+  paid: boolean;
+}

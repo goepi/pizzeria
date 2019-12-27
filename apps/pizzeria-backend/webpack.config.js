@@ -40,7 +40,12 @@ module.exports = env => {
     resolve: {
       extensions: ['.ts', '.tsx', '.js'],
     },
-    plugins: [new webpack.DefinePlugin(envKeys)],
+    plugins: [
+      new webpack.DefinePlugin(envKeys),
+      new webpack.ProvidePlugin({
+        Debug: 'Debug',
+      }),
+    ],
     node: {
       __dirname: true,
     },

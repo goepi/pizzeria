@@ -4,6 +4,9 @@ import { StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 import { validateCart, validateTokenId, validateUsername } from '../../utils/requestValidation';
 import { verifyToken } from '../tokens/helpers';
+import Debug from 'debug';
+
+const debug = Debug('app:cart');
 
 export interface Cart {
   [id: string]: number;
@@ -71,9 +74,10 @@ const validateAndModifyCart = (
 ) => {
   const id = validateTokenId(data.headers.token);
   const username = validateUsername(data.pathVariables && data.pathVariables.username);
-
   if (id && username) {
+    debug('HERE', data.payload.cart);
     validateCart(data.payload.cart, (isCartValid: boolean) => {
+      debug(isCartValid);
       if (isCartValid) {
         verifyToken(id, username, isTokenValid => {
           if (isTokenValid) {

@@ -13,8 +13,11 @@ export const NavBar = () => (
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'flex-end',
+          alignItems: 'center',
         }}
-      >{`Cart: ${itemsInCart(value.cart)}`}</div>
+      >
+        <div style={{ fontSize: 40, fontWeight: 800 }}>{`Cart: ${itemsInCart(value.cart)}`}</div>
+      </div>
     )}
   </CartContext.Consumer>
 );

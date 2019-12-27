@@ -18,8 +18,8 @@ export class Login extends React.Component<RouteComponentProps, State> {
     signIn: true,
     username: 'c',
     password: 'p',
-    email: undefined,
-    address: undefined,
+    email: '',
+    address: '',
     redirectToReferrer: false,
   };
 
@@ -35,8 +35,10 @@ export class Login extends React.Component<RouteComponentProps, State> {
   private signUp = async () => {
     const { username, password, email, address } = this.state;
     if (username && password && email && address) {
-      await Auth.signUp(username, password, address, email);
-      this.signIn(username, password);
+      const result = await Auth.signUp(username, password, address, email);
+      if (result) {
+        this.signIn(username, password);
+      }
     }
   };
 

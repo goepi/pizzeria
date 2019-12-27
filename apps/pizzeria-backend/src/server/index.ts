@@ -37,7 +37,7 @@ export class App {
   };
 
   private handleParsedRequest = (parsedRequest: ParsedRequest, res: ServerResponse) => {
-    this.router.handleRequest(parsedRequest, this.sendResponse(res));
+    this.router.handleRequest(parsedRequest, res, this.sendResponse(res));
   };
 
   private sendResponse = (res: ServerResponse) => (statusCode: StatusCode, payload?: any) => {
@@ -53,7 +53,8 @@ export class App {
     // writeHead writes status code to the response
     res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.writeHead(200);
+    res.writeHead(statusCode);
+
     res.end(payloadString);
 
     debug('Response ', statusCode, payloadString);

@@ -3,23 +3,28 @@ import fs from 'fs';
 import path from 'path';
 import { CallbackError } from '../types/errors';
 import { helpers } from '../utils/cryptography';
-import { Menu, Token, User } from './types';
+import { Menu, Order, Token, User } from './types';
 
 type createUserCallback = (err: CallbackError | false, data?: User) => void;
 type createTokenCallback = (err: CallbackError | false, data?: Token) => void;
+type createOrderCallback = (err: CallbackError | false, data?: Order) => void;
 type readUserCallback = (err: CallbackError | false, data?: User) => void;
 type readTokenCallback = (err: CallbackError | false, data?: Token) => void;
 type readMenuCallback = (err: CallbackError | false, data?: Menu) => void;
+type readOrdersCallback = (err: CallbackError | false, data?: Order) => void;
 
 interface DataInterface {
   baseDir: string;
   create(dir: 'users', file: string, data: User, callback: createUserCallback): void;
   create(dir: 'tokens', file: string, data: Token, callback: createTokenCallback): void;
+  create(dir: 'orders', file: string, data: Order, callback: createOrderCallback): void;
   read(dir: 'users', file: string, callback: readUserCallback): void;
   read(dir: 'tokens', file: string, callback: readTokenCallback): void;
   read(dir: 'menus', file: string, callback: readMenuCallback): void;
+  read(dir: 'orders', file: string, callback: readOrdersCallback): void;
   update(dir: 'users', file: string, data: User, callback: (err: CallbackError | false) => void): void;
   update(dir: 'tokens', file: string, data: Token, callback: (err: CallbackError | false) => void): void;
+  update(dir: 'orders', file: string, data: Order, callback: (err: CallbackError | false) => void): void;
   delete(dir: 'users' | 'tokens', file: string, callback: (err: CallbackError | false) => void): void;
 }
 
@@ -29,10 +34,10 @@ dataInterface.baseDir = path.join(__dirname, '../.data');
 
 // Write data to a file
 dataInterface.create = (
-  dir: 'users' | 'tokens',
+  dir: 'users' | 'tokens' | 'orders',
   file: string,
-  data: User | Token,
-  callback: createUserCallback | createTokenCallback
+  data: User | Token | Order,
+  callback: createUserCallback | createTokenCallback | createOrderCallback
 ) => {
   const filePath = `${dataInterface.baseDir}/${dir}/${file}.json`;
 
@@ -63,9 +68,9 @@ dataInterface.create = (
 };
 
 dataInterface.read = (
-  dir: 'users' | 'tokens' | 'menus',
+  dir: 'users' | 'tokens' | 'menus' | 'orders',
   file: string,
-  callback: readUserCallback | readTokenCallback | readMenuCallback
+  callback: readUserCallback | readTokenCallback | readMenuCallback | readOrdersCallback
 ) => {
   const filePath = `${dataInterface.baseDir}/${dir}/${file}.json`;
   fs.readFile(filePath, 'utf8', (err, data) => {
@@ -79,9 +84,9 @@ dataInterface.read = (
 };
 
 dataInterface.update = (
-  dir: 'users' | 'tokens',
+  dir: 'users' | 'tokens' | 'orders',
   file: string,
-  data: User | Token,
+  data: User | Token | Order,
   callback: (err: CallbackError | false) => void
 ) => {
   const filePath = `${dataInterface.baseDir}/${dir}/${file}.json`;

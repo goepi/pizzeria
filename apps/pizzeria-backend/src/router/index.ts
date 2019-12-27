@@ -2,6 +2,7 @@ import Debug from 'debug';
 import { ParsedRequest } from '../server/helpers';
 import { StatusCode } from '../server/types';
 import { CallbackError } from '../types/errors';
+import { ServerResponse } from 'http';
 const debug = Debug('app:router');
 
 type HandlerCallback = <T>(statusCode: StatusCode, payload?: CallbackError | T) => void;
@@ -80,7 +81,16 @@ export class Router {
     this.routes[method] = [...this.routes[method], route];
   };
 
-  public handleRequest = (data: ParsedRequest, callback: HandlerCallback) => {
+  public handlePreflight = (data: ParsedRequest, res: ServerResponse, callback: HandlerCallback) => {
+    res.setHeader('Access-Control-Allow-Methods', 'PUT');
+    res.setHeader('Access-Control-Allow-Headers', 'token');
+    callback(204);
+  };
+
+  public handleRequest = (data: ParsedRequest, res: ServerResponse, callback: HandlerCallback) => {
+    if (data.method === 'options') {
+      return this.handlePreflight(data, res, callback);
+    }
     if (isMethodValid(data.method)) {
       this.checkRoutes(this.routes[data.method], data, callback);
     } else {
