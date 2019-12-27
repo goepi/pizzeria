@@ -1,7 +1,7 @@
+import { Button, Icon } from 'antd';
 import React from 'react';
-import { CartContext, itemsInCart } from '../../context/cart';
 import { Link } from 'react-router-dom';
-import { Icon, Button } from 'antd';
+import { CartContext, itemsInCart } from '../../context/cart';
 import { Text } from '../Text';
 
 interface NavLinkProps {
@@ -19,7 +19,7 @@ const NavLink = (props: NavLinkProps) => (
 
 export const NavBar = () => (
   <CartContext.Consumer>
-    {value => (
+    {(value: CartContext) => (
       <div
         style={{
           width: '100%',

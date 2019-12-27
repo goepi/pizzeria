@@ -5,12 +5,16 @@ import { ParsedRequest } from '../../server/helpers';
 import { StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 
+const debug = Debug('app:payment');
+
 export const makePayment = (amount: number, currency: string, callback: (error: CallbackError | false) => void) => {
   const stringPayload = querystring.stringify({
-    amount,
+    amount: Math.floor(amount),
     currency,
     source: 'tok_visa',
   });
+
+  debug(amount, currency, ENV_STRIPE_SECRET);
 
   const requestDetails = {
     protocol: 'https:',

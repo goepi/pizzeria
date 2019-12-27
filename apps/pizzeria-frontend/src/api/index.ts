@@ -1,5 +1,6 @@
 import { Cart } from '../context/cart';
 import { Auth } from '../authentication';
+import { Order } from '../components/Orders';
 
 export const login = async (username: string, password: string) => {
   const response = await fetch('https://localhost:5001/tokens', {
@@ -45,6 +46,24 @@ export const getMenu = async () => {
   return false;
 };
 
+export const getOrders = async (): Promise<Order[]> => {
+  if (Auth.isAuthenticated()) {
+    const token = Auth.getAuthToken();
+    const username = Auth.getUsername();
+    if (token) {
+      const response = await fetch(`https://localhost:5001/users/${username}/orders`, {
+        headers: {
+          token,
+        },
+      });
+      if (response.ok) {
+        return await response.json();
+      }
+    }
+  }
+  throw new Error('Not authenticated');
+};
+
 export const getCart = async () => {
   if (Auth.isAuthenticated()) {
     const token = Auth.getAuthToken();
@@ -82,4 +101,25 @@ export const addProductToCart = async (username: string, cart: Cart) => {
     }
   }
   return false;
+};
+
+export const checkout = async (): Promise<boolean> => {
+  if (Auth.isAuthenticated()) {
+    const token = Auth.getAuthToken();
+    const username = Auth.getUsername();
+    if (token && username) {
+      if (token) {
+        const response = await fetch(`https://localhost:5001/users/${username}/checkout`, {
+          method: 'POST',
+          headers: {
+            token,
+          },
+        });
+        if (response.ok) {
+          return true;
+        }
+      }
+    }
+  }
+  throw new Error('Error checking out');
 };

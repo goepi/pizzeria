@@ -35,7 +35,7 @@ export class App extends React.Component<any, State> {
     }
   };
 
-  public initializeCart = async () => {
+  public fetchUserCart = async () => {
     const cart = await getCart();
     if (cart) {
       this.setState({ cart });
@@ -50,7 +50,8 @@ export class App extends React.Component<any, State> {
           value={{
             cart: this.state.cart,
             addProductToCart: this.addProductToCart,
-            initializeCart: this.initializeCart,
+            initializeCart: this.fetchUserCart,
+            resetCart: () => this.setState({ cart: {} }),
           }}
         >
           <Route path="/" render={() => (Auth.isAuthenticated() ? <Dashboard /> : <Redirect to="/login" />)} />

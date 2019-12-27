@@ -1,5 +1,6 @@
 import React from 'react';
 import { Product, Products } from './Dashboard';
+import { Button } from 'antd';
 
 interface Props {
   products: Products;
@@ -15,15 +16,15 @@ interface MenuItemProps {
 const MenuItem = (props: MenuItemProps) => (
   <div style={{ display: 'flex', flexDirection: 'row', marginTop: 10, marginBottom: 10 }}>
     <div style={{ flex: 3 }}>{props.name}</div>
-    <div style={{ flex: 1 }}>{props.price}</div>
-    <div style={{ flex: 0.5 }} onClick={props.addProductToCart}>
+    <div style={{ flex: 1 }}>{`$${props.price}`}</div>
+    <Button style={{ flex: 0.5 }} onClick={props.addProductToCart}>
       Add
-    </div>
+    </Button>
   </div>
 );
 
 export const Menu = (props: Props) => (
-  <div style={{ width: '30%', marginLeft: 20, marginTop: 20 }}>
+  <div style={{ width: '50%', marginLeft: 20, marginTop: 20 }}>
     {Object.keys(props.products).map(id => (
       <MenuItem
         key={id}

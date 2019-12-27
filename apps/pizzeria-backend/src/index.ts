@@ -36,8 +36,6 @@ router.delete('/users/:username/cart', cartsHandler.delete);
 router.get('/users/:username/orders', ordersHandler.get);
 router.post('/users/:username/checkout', ordersHandler.post);
 
-router.post('/payments/pay', paymentsHandler.makePayment);
-
 // initialize apps
 const httpsApp = new App(router, httpsServerOptions);
 const httpApp = new App(router);

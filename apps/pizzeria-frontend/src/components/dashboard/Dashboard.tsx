@@ -4,6 +4,8 @@ import { Route } from 'react-router-dom';
 import { CartContext } from '../../context/cart';
 import { Menu } from './Menu';
 import { NavBar } from './NavBar';
+import { Orders } from '../Orders';
+import { Checkout } from '../Checkout';
 
 export interface Product {
   name: string;
@@ -19,7 +21,7 @@ interface State {
   error: string | null;
 }
 
-export class Dashboard extends React.Component<any, any> {
+export class Dashboard extends React.Component<{}, State> {
   public static contextType: React.Context<CartContext> = CartContext;
   public state: State = { products: {}, error: null };
 
@@ -43,6 +45,13 @@ export class Dashboard extends React.Component<any, any> {
         <Route
           path={'/menu'}
           render={() => <Menu products={this.state.products} addProductToCart={this.context.addProductToCart} />}
+        />
+        <Route path={'/orders'} render={() => <Orders products={this.state.products} />} />
+        <Route
+          path={'/checkout'}
+          render={() => (
+            <Checkout products={this.state.products} cart={this.context.cart} resetCart={this.context.resetCart} />
+          )}
         />
       </>
     );

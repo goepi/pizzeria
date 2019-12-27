@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input } from '../Input';
-import { Button } from '../Button';
+import { Button } from 'antd';
 
 interface Props {
   username?: string;
@@ -19,6 +19,6 @@ export const SignInForm = (props: Props) => (
       label="Password"
       onChange={e => props.setPassword(e.target.value)}
     />
-    <Button onClick={props.onSubmit} label="Sign in" />
+    <Button onClick={props.onSubmit}>Sign in</Button>
   </div>
 );

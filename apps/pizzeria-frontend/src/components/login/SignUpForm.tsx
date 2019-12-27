@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input } from '../Input';
-import { Button } from '../Button';
+import { Button } from 'antd';
 
 interface Props {
   username?: string;
@@ -20,6 +20,6 @@ export const SignUpForm = (props: Props) => (
     <Input type="password" label="Password" value={props.password} onChange={e => props.setPassword(e.target.value)} />
     <Input type="text" label="Email" value={props.email} onChange={e => props.setEmail(e.target.value)} />
     <Input type="text" label="Address" value={props.address} onChange={e => props.setAddress(e.target.value)} />
-    <Button label="Sign up" onClick={props.onSubmit} />
+    <Button onClick={props.onSubmit}>Sign up</Button>
   </div>
 );
