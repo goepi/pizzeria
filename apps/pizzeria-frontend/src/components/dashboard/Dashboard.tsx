@@ -1,5 +1,6 @@
 import React from 'react';
 import { getMenu } from '../../api';
+import { Route } from 'react-router-dom';
 import { CartContext } from '../../context/cart';
 import { Menu } from './Menu';
 import { NavBar } from './NavBar';
@@ -39,7 +40,10 @@ export class Dashboard extends React.Component<any, any> {
     return (
       <>
         <NavBar />
-        <Menu products={this.state.products} addProductToCart={this.context.addProductToCart} />
+        <Route
+          path={'/menu'}
+          render={() => <Menu products={this.state.products} addProductToCart={this.context.addProductToCart} />}
+        />
       </>
     );
   }

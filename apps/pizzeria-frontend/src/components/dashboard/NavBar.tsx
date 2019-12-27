@@ -1,5 +1,21 @@
 import React from 'react';
 import { CartContext, itemsInCart } from '../../context/cart';
+import { Link } from 'react-router-dom';
+import { Icon, Button } from 'antd';
+import { Text } from '../Text';
+
+interface NavLinkProps {
+  text: string;
+  to: string;
+}
+
+const NavLink = (props: NavLinkProps) => (
+  <Link to={props.to} style={{ marginRight: 40 }}>
+    <Text size={40} weight={600}>
+      {props.text}
+    </Text>
+  </Link>
+);
 
 export const NavBar = () => (
   <CartContext.Consumer>
@@ -12,11 +28,20 @@ export const NavBar = () => (
           color: 'white',
           display: 'flex',
           flexDirection: 'row',
-          justifyContent: 'flex-end',
           alignItems: 'center',
+          paddingLeft: 20,
+          paddingRight: 20,
         }}
       >
-        <div style={{ fontSize: 40, fontWeight: 800 }}>{`Cart: ${itemsInCart(value.cart)}`}</div>
+        <div style={{ flex: 1 }}>
+          <NavLink to="/menu" text="Menu" />
+          <NavLink to="/orders" text="Orders" />
+        </div>
+        <Icon style={{ fontSize: 40 }} type="shopping-cart" />
+        <Text size={40} weight={800}>{`${itemsInCart(value.cart)}`}</Text>
+        <Link to={'/checkout'} style={{ marginLeft: 20 }}>
+          <Button type="primary">Check out</Button>
+        </Link>
       </div>
     )}
   </CartContext.Consumer>

@@ -51,7 +51,7 @@ export class Login extends React.Component<RouteComponentProps, State> {
 
   public render() {
     if (this.state.redirectToReferrer) {
-      return <Redirect to="/" />;
+      return <Redirect to="/menu" />;
     }
     return (
       <div>
