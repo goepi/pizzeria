@@ -1,10 +1,9 @@
 import { dataInterface } from '../../data/index';
 import { Token } from '../../data/types';
-import { StatusCode } from '../../server/types';
+import { ParsedRequest, StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 import { helpers } from '../../utils/cryptography';
 import { validateExtend, validatePassword, validateTokenId, validateUsername } from '../../utils/requestValidation';
-import { ParsedRequest } from '../../server/helpers';
 
 export interface TokensHandler {
   get: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | Token) => void) => void;

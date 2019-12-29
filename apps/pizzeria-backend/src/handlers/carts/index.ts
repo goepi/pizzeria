@@ -1,11 +1,11 @@
 import { dataInterface } from '../../data';
-import { ParsedRequest } from '../../server/helpers';
-import { StatusCode } from '../../server/types';
+import { ParsedRequest, StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 import { validateCart, validateTokenId, validateUsername } from '../../utils/requestValidation';
 import { verifyToken } from '../tokens/helpers';
 import Debug from 'debug';
 import { User } from '../../data/types';
+import { HandlerCallback } from '../../router/types';
 
 const debug = Debug('app:cart');
 
@@ -14,13 +14,13 @@ export interface Cart {
 }
 
 export interface CartsHandler {
-  get: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | Cart) => void) => void;
+  get: (data: ParsedRequest, callback: HandlerCallback) => void;
   put: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | Cart) => void) => void;
   delete: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | Cart) => void) => void;
 }
 
 export const cartsHandler: CartsHandler = {
-  get: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | Cart) => void) => {
+  get: (data: ParsedRequest, callback: HandlerCallback) => {
     const id = validateTokenId(data.headers.token);
     const username = validateUsername(data.pathVariables && data.pathVariables.username);
 

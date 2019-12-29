@@ -1,13 +1,9 @@
-import Debug from 'debug';
-import { ParsedRequest } from '../server/helpers';
-import { StatusCode } from '../server/types';
-import { CallbackError } from '../types/errors';
+import util from 'util';
 import { ServerResponse } from 'http';
-const debug = Debug('app:router');
+import { ParsedRequest } from '../server/types';
+import { Handler, HandlerCallback } from './types';
 
-type HandlerCallback = <T>(statusCode: StatusCode, payload?: CallbackError | T) => void;
-
-type Handler = (data: ParsedRequest, callback: HandlerCallback) => void;
+const debug = util.debuglog('app:router');
 
 interface Route {
   regex: RegExp;
@@ -54,19 +50,19 @@ export class Router {
     return regex;
   };
 
-  public get = <T>(path: string, callback: Handler) => {
+  public get = (path: string, callback: Handler) => {
     this.addRoute('get', path, callback);
   };
 
-  public post = <T>(path: string, callback: Handler) => {
+  public post = (path: string, callback: Handler) => {
     this.addRoute('post', path, callback);
   };
 
-  public put = <T>(path: string, callback: Handler) => {
+  public put = (path: string, callback: Handler) => {
     this.addRoute('put', path, callback);
   };
 
-  public delete = <T>(path: string, callback: Handler) => {
+  public delete = (path: string, callback: Handler) => {
     this.addRoute('delete', path, callback);
   };
 
@@ -101,7 +97,7 @@ export class Router {
   public checkRoutes = (routes: Route[], data: ParsedRequest, callback: HandlerCallback) => {
     routes.some(r => {
       const result = r.regex.exec(data.path);
-      debug(r.regex, data.path, result);
+      debug(r.regex.toString(), data.path, result);
       if (result) {
         r.callback({ ...data, pathVariables: result.groups }, callback);
         return true;

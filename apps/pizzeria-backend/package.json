@@ -21,6 +21,8 @@
     "url": "git+https://github.com/goepi/pizzeria.git"
   },
   "scripts": {
+    "tslint": "tslint -p .",
+    "tslint:fix": "tslint --fix -p .",
     "ts:compile:backend": "tsc --noEmit -p ./tsconfig.json",
     "build": "npm run clean && npm run compile",
     "clean": "rm -rf ./dist",

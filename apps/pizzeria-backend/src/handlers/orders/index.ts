@@ -1,7 +1,6 @@
 import { dataInterface } from '../../data';
 import { Order, UserOrders } from '../../data/types';
-import { ParsedRequest } from '../../server/helpers';
-import { StatusCode } from '../../server/types';
+import { ParsedRequest, StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 import { helpers } from '../../utils/cryptography';
 import { getMenu, validateTokenId, validateUsername } from '../../utils/requestValidation';
@@ -10,11 +9,12 @@ import { makePayment } from '../payment';
 import { verifyToken } from '../tokens/helpers';
 import Debug from 'debug';
 import { sendEmail, sendSuccessfulOrderEmail } from '../mail';
+import { HandlerCallback } from '../../router/types';
 
 const debug = Debug('app:orders');
 
 export const ordersHandler = {
-  get: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | Order[]) => void) => {
+  get: (data: ParsedRequest, callback: HandlerCallback) => {
     const id = validateTokenId(data.headers.token);
     const username = validateUsername(data.pathVariables && data.pathVariables.username);
 
@@ -42,7 +42,7 @@ export const ordersHandler = {
       callback(403, { error: 'Invalid request parameters.' });
     }
   },
-  post: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | Cart) => void) => {
+  post: (data: ParsedRequest, callback: HandlerCallback) => {
     const id = validateTokenId(data.headers.token);
     const username = validateUsername(data.pathVariables && data.pathVariables.username);
 

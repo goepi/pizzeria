@@ -1,9 +1,8 @@
 import { dataInterface } from '../../data';
 import { Menu } from '../../data/types';
-import { StatusCode } from '../../server/types';
+import { ParsedRequest, StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 import { validateMenuId } from '../../utils/requestValidation';
-import { ParsedRequest } from '../../server/helpers';
 
 export interface MenusHandler {
   get: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | Menu) => void) => void;

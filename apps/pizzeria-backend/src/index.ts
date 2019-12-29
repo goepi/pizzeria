@@ -1,14 +1,13 @@
 import fs from 'fs';
 import { ServerOptions } from 'https';
 import path from 'path';
+import { cartsHandler } from './handlers/carts';
 import { menusHandler } from './handlers/menus';
+import { ordersHandler } from './handlers/orders';
 import { tokensHandler } from './handlers/tokens';
 import { usersHandler } from './handlers/users';
 import { Router } from './router';
 import { App } from './server';
-import { cartsHandler } from './handlers/carts';
-import { paymentsHandler } from './handlers/payment';
-import { ordersHandler } from './handlers/orders';
 
 const httpsServerOptions: ServerOptions = {
   key: fs.readFileSync(path.resolve(__dirname, '../https/key.pem')),
@@ -17,6 +16,7 @@ const httpsServerOptions: ServerOptions = {
 
 // define routes
 const router = new Router();
+
 router.get('/tokens', tokensHandler.get);
 router.post('/tokens', tokensHandler.post);
 router.put('/tokens', tokensHandler.put);
@@ -44,6 +44,7 @@ const httpApp = new App(router);
 httpsApp.listen();
 httpApp.listen();
 
+// nodemon
 process.once('SIGUSR2', () => {
   process.kill(process.pid, 'SIGUSR2');
 });

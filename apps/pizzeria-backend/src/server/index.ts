@@ -3,8 +3,10 @@ import Debug from 'debug';
 import http, { IncomingMessage, ServerOptions, ServerResponse } from 'http';
 import https from 'https';
 import { Router } from '../router';
-import { ParsedRequest, parseRequest } from './helpers';
-import { StatusCode } from './types';
+import { parseRequest } from './helpers';
+import { ParsedRequest, StatusCode } from './types';
+import { User } from '../data/types';
+import { CallbackError } from '../types/errors';
 
 const debug = Debug('app');
 
@@ -41,8 +43,6 @@ export class App {
   };
 
   private sendResponse = (res: ServerResponse) => (statusCode: StatusCode, payload?: any) => {
-    // use  status code called back by handler or use default status code 200
-    statusCode = typeof statusCode === 'number' ? statusCode : 200;
     // use payload called back by handler or use default: empty object
     payload = typeof payload === 'object' ? payload : {};
 

@@ -11,7 +11,7 @@ interface Helpers {
 export const helpers = {
   // Create a SHA256 hash
   hash: (str: string) => {
-    if (typeof str === 'string' && str.length) {
+    if (str.length) {
       return crypto
         .createHmac('sha256', 'ENV_HASHING_SECRET')
         .update(str)

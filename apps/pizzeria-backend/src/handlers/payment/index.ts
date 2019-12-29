@@ -1,8 +1,7 @@
 import https from 'https';
 import querystring from 'querystring';
 import { User } from '../../data/types';
-import { ParsedRequest } from '../../server/helpers';
-import { StatusCode } from '../../server/types';
+import { ParsedRequest, StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 
 const debug = Debug('app:payment');

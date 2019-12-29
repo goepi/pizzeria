@@ -1,7 +1,6 @@
 import { dataInterface } from '../../data/index';
 import { User } from '../../data/types';
-import { ParsedRequest } from '../../server/helpers';
-import { StatusCode } from '../../server/types';
+import { ParsedRequest, StatusCode } from '../../server/types';
 import { CallbackError } from '../../types/errors';
 import { helpers } from '../../utils/cryptography';
 import {
