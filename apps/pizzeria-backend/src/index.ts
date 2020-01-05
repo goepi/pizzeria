@@ -8,6 +8,8 @@ import { tokensHandler } from './handlers/tokens';
 import { usersHandler } from './handlers/users';
 import { Router } from './router';
 import { App } from './server';
+import { indexHandler } from './handlers/index';
+import { publicHandler } from './handlers/public';
 
 const httpsServerOptions: ServerOptions = {
   key: fs.readFileSync(path.resolve(__dirname, '../https/key.pem')),
@@ -17,6 +19,13 @@ const httpsServerOptions: ServerOptions = {
 // define routes
 const router = new Router();
 
+// Templates API
+router.get('/', indexHandler.get);
+
+// static assets API
+router.get('/public/:filename', publicHandler.get);
+
+// JSON API
 router.get('/tokens', tokensHandler.get);
 router.post('/tokens', tokensHandler.post);
 router.put('/tokens', tokensHandler.put);

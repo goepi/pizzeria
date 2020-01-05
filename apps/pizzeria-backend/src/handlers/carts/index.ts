@@ -14,13 +14,13 @@ export interface Cart {
 }
 
 export interface CartsHandler {
-  get: (data: ParsedRequest, callback: HandlerCallback) => void;
+  get: (data: ParsedRequest, callback: HandlerCallback<Cart>) => void;
   put: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | Cart) => void) => void;
   delete: (data: ParsedRequest, callback: (statusCode: StatusCode, payload?: CallbackError | Cart) => void) => void;
 }
 
 export const cartsHandler: CartsHandler = {
-  get: (data: ParsedRequest, callback: HandlerCallback) => {
+  get: (data: ParsedRequest, callback: HandlerCallback<Cart>) => {
     const id = validateTokenId(data.headers.token);
     const username = validateUsername(data.pathVariables && data.pathVariables.username);
 

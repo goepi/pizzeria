@@ -7,5 +7,9 @@ interface Config {
 }
 
 export const config: Config = {
-  templateStrings: {},
+  templateStrings: {
+    appName: 'Pizzeria',
+    yearCreated: '2020',
+    companyName: 'Pizzeria',
+  },
 };

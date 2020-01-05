@@ -1,11 +1,11 @@
+import fs from 'fs';
 import { IncomingMessage, ServerResponse } from 'http';
+import path from 'path';
 import { StringDecoder } from 'string_decoder';
 import { default as url } from 'url';
+import { config, TemplateStrings } from '../config';
 import { helpers } from '../utils/cryptography';
 import { Cookies, ParseRequestCallback, StringInterpolationKeys } from './types';
-import path from 'path';
-import fs from 'fs';
-import { config, TemplateStrings } from '../config';
 
 export const parseCookies = (request: IncomingMessage) => {
   interface CookieData {
@@ -82,13 +82,17 @@ export const parseRequest = (req: IncomingMessage, callback: ParseRequestCallbac
 };
 
 // Get the string content of a template, and use provided data for string interpolation
-export const getTemplate = (templateName: string, data: StringInterpolationKeys, callback) => {
+export const getTemplate = (
+  templateName: string,
+  data: StringInterpolationKeys,
+  callback: (err: boolean, templateStr?: string) => void
+) => {
   if (templateName.length > 0 && data) {
     const templatesDir = path.join(__dirname, '../templates/');
     fs.readFile(`${templatesDir}${templateName}.html`, 'utf8', (err, str) => {
       if (!err && str && str.length > 0) {
         // Do interpolation on the string
-        const finalString = interpolate(str, data);
+        const finalString = interpolateIntoTemplate(str, data);
         callback(false, finalString);
       } else {
         callback(true);
@@ -100,31 +104,33 @@ export const getTemplate = (templateName: string, data: StringInterpolationKeys,
 };
 
 // Add the universal header and footer to a string, and pass provided data object to header and footer for interpolation
-export const addUniversalTemplates = (str, data, callback) => {
-  str = typeof str == 'string' && str.length > 0 ? str : '';
-  data = typeof data == 'object' && data !== null ? data : {};
+export const mergeWithGlobalTemplates = (
+  str: string,
+  stringInterpolation: StringInterpolationKeys,
+  callback: (err: boolean, templateStr?: string) => void
+) => {
   // Get the header
-  helpers.getTemplate('_header', data, function(err, headerString) {
-    if (!err && headerString) {
+  getTemplate('_header', stringInterpolation, (headerErr: boolean, headerString?: string) => {
+    if (!headerErr && headerString) {
       // Get the footer
-      helpers.getTemplate('_footer', data, function(err, footerString) {
-        if (!err && headerString) {
-          // Add them all together
-          var fullString = headerString + str + footerString;
+      getTemplate('_footer', stringInterpolation, (footerErr: boolean, footerString?: string) => {
+        if (!footerErr && headerString) {
+          // Add them all together to obtain full template
+          const fullString = `${headerString}${str}${footerString}`;
           callback(false, fullString);
         } else {
-          callback('Could not find the footer template');
+          callback(true);
         }
       });
     } else {
-      callback('Could not find the header template');
+      callback(true);
     }
   });
 };
 
 // interpolate strings into template
-export const interpolate = (templateStr: string, data: TemplateStrings) => {
-  const interpolations = {...data};
+export const interpolateIntoTemplate = (templateStr: string, data: TemplateStrings) => {
+  const interpolations = { ...data };
 
   // Add the templateGlobals to the data object, prepending their key name with "global."
   for (const key in config.templateStrings) {
@@ -134,9 +140,9 @@ export const interpolate = (templateStr: string, data: TemplateStrings) => {
   }
 
   // for each key in interpolations, insert the value into the corresponding placeholder in the template
-  for (const key in data) {
-    if (data.hasOwnProperty(key)) {
-      const replace = data[key];
+  for (const key in interpolations) {
+    if (interpolations.hasOwnProperty(key)) {
+      const replace = interpolations[key];
       const find = `{${key}}`;
       templateStr = templateStr.replace(find, replace);
     }
@@ -145,7 +151,7 @@ export const interpolate = (templateStr: string, data: TemplateStrings) => {
 };
 
 // Get the contents of a static (public) asset
-const getStaticAsset = (fileName: string, callback: (err: boolean, data: Buffer)) => {
+export const getStaticAsset = (fileName: string, callback: (err: boolean, data?: Buffer) => void) => {
   if (fileName.length > 0) {
     const publicDir = path.join(__dirname, '../public/');
     fs.readFile(`${publicDir}${fileName}`, (err, data) => {

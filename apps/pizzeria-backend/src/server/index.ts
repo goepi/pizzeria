@@ -5,8 +5,7 @@ import https from 'https';
 import { Router } from '../router';
 import { parseRequest } from './helpers';
 import { ParsedRequest, StatusCode } from './types';
-import { User } from '../data/types';
-import { CallbackError } from '../types/errors';
+import { ContentType } from '../router/types';
 
 const debug = Debug('app');
 
@@ -42,22 +41,48 @@ export class App {
     this.router.handleRequest(parsedRequest, res, this.sendResponse(res));
   };
 
-  private sendResponse = (res: ServerResponse) => (statusCode: StatusCode, payload?: any) => {
-    // use payload called back by handler or use default: empty object
-    payload = typeof payload === 'object' ? payload : {};
+  private sendResponse = (res: ServerResponse) => (
+    statusCode: StatusCode,
+    payload?: any,
+    contentType?: ContentType
+  ) => {
+    contentType = contentType ? contentType : 'json';
+    this.setContentType(contentType, res);
 
-    // convert payload to string, to be sent back to user
-    const payloadString = JSON.stringify(payload);
+    const payloadString = this.getPayloadString(contentType, payload);
 
     // Send the response
     // writeHead writes status code to the response
-    res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.writeHead(statusCode);
 
     res.end(payloadString);
 
     debug('Response ', statusCode, payloadString);
+  };
+
+  private setContentType = (contentType: ContentType, res: ServerResponse) => {
+    res.setHeader('Content-Type', MapContentType[contentType]);
+  };
+
+  private getPayloadString = (contentType: ContentType, payload?: any) => {
+    let payloadString = '';
+
+    switch (contentType) {
+      case 'json': {
+        payloadString = JSON.stringify(typeof payload === 'object' ? payload : {});
+        break;
+      }
+      case 'html': {
+        payloadString = typeof payload === 'string' ? payload : '';
+        break;
+      }
+      default: {
+        payloadString = typeof payload !== 'undefined' ? payload : '';
+      }
+    }
+
+    return payloadString;
   };
 
   public listen = () => {
@@ -68,3 +93,13 @@ export class App {
     }
   };
 }
+
+const MapContentType: { [contentType in ContentType]: string } = {
+  json: 'application/json',
+  html: 'text/html',
+  favicon: 'image/x-icon',
+  plain: 'text/plain',
+  css: 'text/css',
+  png: 'image/png',
+  jpg: 'image/jpeg',
+};

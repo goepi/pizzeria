@@ -7,7 +7,7 @@ const debug = util.debuglog('app:router');
 
 interface Route {
   regex: RegExp;
-  callback: Handler;
+  callback: Handler<any>;
 }
 
 interface Routes {
@@ -50,23 +50,23 @@ export class Router {
     return regex;
   };
 
-  public get = (path: string, callback: Handler) => {
+  public get = (path: string, callback: Handler<any>) => {
     this.addRoute('get', path, callback);
   };
 
-  public post = (path: string, callback: Handler) => {
+  public post = (path: string, callback: Handler<any>) => {
     this.addRoute('post', path, callback);
   };
 
-  public put = (path: string, callback: Handler) => {
+  public put = (path: string, callback: Handler<any>) => {
     this.addRoute('put', path, callback);
   };
 
-  public delete = (path: string, callback: Handler) => {
+  public delete = (path: string, callback: Handler<any>) => {
     this.addRoute('delete', path, callback);
   };
 
-  public addRoute = (method: RouteMethod, path: string, callback: Handler) => {
+  public addRoute = (method: RouteMethod, path: string, callback: Handler<any>) => {
     const regex = this.getRegexFromPath(path);
 
     const route = {
@@ -77,13 +77,13 @@ export class Router {
     this.routes[method] = [...this.routes[method], route];
   };
 
-  public handlePreflight = (data: ParsedRequest, res: ServerResponse, callback: HandlerCallback) => {
+  public handlePreflight = (data: ParsedRequest, res: ServerResponse, callback: HandlerCallback<any>) => {
     res.setHeader('Access-Control-Allow-Methods', 'PUT');
     res.setHeader('Access-Control-Allow-Headers', 'token');
-    callback(204);
+    callback(204, 'plain');
   };
 
-  public handleRequest = (data: ParsedRequest, res: ServerResponse, callback: HandlerCallback) => {
+  public handleRequest = (data: ParsedRequest, res: ServerResponse, callback: HandlerCallback<any>) => {
     if (data.method === 'options') {
       return this.handlePreflight(data, res, callback);
     }
@@ -94,7 +94,7 @@ export class Router {
     }
   };
 
-  public checkRoutes = (routes: Route[], data: ParsedRequest, callback: HandlerCallback) => {
+  public checkRoutes = (routes: Route[], data: ParsedRequest, callback: HandlerCallback<any>) => {
     routes.some(r => {
       const result = r.regex.exec(data.path);
       debug(r.regex.toString(), data.path, result);
